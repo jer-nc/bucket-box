@@ -1,4 +1,5 @@
 import { getBucketContents } from '@/cli-functions/getBucketContents'
+import { getBucketRegion } from '@/cli-functions/getBucketRegion'
 import Spinner from '@/components/custom/loaders/Spinner'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -27,16 +28,19 @@ const FolderPage = () => {
       setLoading(true);
       const profile = localStorage.getItem('aws-profile') || '';
       const folderName = currentPathname.replace('/buckets/', '');
-      const response = await getBucketContents(folderName, profile);
+      const bucketLocation = await getBucketRegion(folderName, profile);
+
+      console.log('bucketLocation', bucketLocation)
+      const response = await getBucketContents(folderName, profile, bucketLocation);
       console.log('bucketContents', response)
       // setBucketContents(bucketContents);
       if (response.Contents) {
         const topLevelItems = {};
-        
-        response.Contents.forEach((item : File) => {
+
+        response.Contents.forEach((item: File) => {
           const keySegments = item.Key.split('/');
           const topLevelFolder = keySegments[0];
-          
+
           if (!topLevelItems[topLevelFolder]) {
             topLevelItems[topLevelFolder] = {
               ...item,
@@ -45,7 +49,7 @@ const FolderPage = () => {
             };
           }
         });
-        
+
         const contents = Object.values(topLevelItems);
         setBucketContents(contents);
         // setBucketContents(topLevelItems);

@@ -1,17 +1,8 @@
 import { Command } from '@tauri-apps/api/shell';
 
-export async function getBucketContents(bucket: string, profile: string, region: string) {
+export async function getBucketRegion(bucket: string, profile: string) {
     try {
-
-        console.log('region', region);
-        // Si la región es 'us-east-1', se usa el valor predeterminado
-        if (region === null) {
-            region = 'us-east-1';
-        }
-
-        console.log('region 2', region);
-
-        const command = new Command('aws-cli', ["s3api", "list-objects-v2", '--bucket', bucket, "--region", region, "--output", "json", "--profile", profile]);
+        const command = new Command('aws-cli', ["s3api", "get-bucket-location", '--bucket', bucket, "--output", "json", "--profile", profile]);
 
         console.log('command', command);
         let errorOutput = '';
@@ -36,7 +27,7 @@ export async function getBucketContents(bucket: string, profile: string, region:
             throw new Error('No buckets found');
         }
 
-        return strParse;
+        return strParse.LocationConstraint;
 
     } catch (error: unknown) {
         if (error instanceof Error) {

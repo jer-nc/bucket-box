@@ -20,6 +20,7 @@ function ListBuckets() {
             setLoading(true);
             const profile = localStorage.getItem('aws-profile') || '';
             const bucketList = await listAllBuckets(profile);
+            console.log('bucketList', bucketList)
             setBuckets(bucketList);
         } catch (error) {
             console.error(error);
