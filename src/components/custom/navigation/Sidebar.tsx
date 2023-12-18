@@ -1,6 +1,4 @@
-'use client'
-import { File, Folder, FolderPlus, Settings, User } from 'lucide-react'
-import React from 'react'
+import {  Folder, FolderPlus, Settings, User } from 'lucide-react'
 import { ToggleThemeButton } from './ToggleThemeButton'
 import { useLocation, useNavigate  } from 'react-router-dom'
 const Sidebar = () => {
@@ -15,11 +13,11 @@ const Sidebar = () => {
       path: '/',
       icon: <Folder size={18} />
     },
-    {
-      name: 'buckets',
-      path: '/test',
-      icon: <File size={18} />
-    },
+    // {
+    //   name: 'buckets',
+    //   path: '/test',
+    //   icon: <File size={18} />
+    // },
     {
       name: 'Create Bucket',
       path: '/create-bucket',

@@ -6,7 +6,7 @@ const Navbar = () => {
     return (
         <nav className={`z-50 px-4 flex items-center fixed top-0 w-full h-14 bg-background border-b`}>
             <div className='w-full flex justify-between items-center'>
-                <div className='flex gap-4 items-center'>
+                <div className='flex gap-2 items-center'>
                     <img src={logo} alt="logo" className='w-6' />
                     <h1 className='font-semibold tracking-tighter'>Bucket Box</h1>
                 </div>
