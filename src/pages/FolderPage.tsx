@@ -97,13 +97,13 @@ const FolderPage = () => {
       </div>
       <Separator className='my-2' />
 
-      <div className='py-12'>
+      <div className='py-12 '>
         {loading ? (
-          <div className='flex items-center justify-center py-8'>
+          <div style={{ height: 'calc(100vh - 14.5rem)' }} className='mx-auto text-center flex flex-col justify-center'>
             <Spinner />
           </div>
         ) : bucketContents.length === 0 ? (
-          <div className='mx-auto text-center flex flex-col justify-center'>
+          <div style={{ height: 'calc(100vh - 14.5rem)' }} className='mx-auto text-center flex flex-col justify-center'>
             <p className='text-sm truncate mx-auto max-w-[10rem] text-muted-foreground'>No files found</p>
           </div>
         ) : (
