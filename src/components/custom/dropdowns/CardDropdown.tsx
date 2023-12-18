@@ -2,13 +2,16 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Bucket } from "@/features/list-buckets/ListBuckets";
 import { Eye, FolderDown, MoreVertical, PanelTop, Trash2 } from "lucide-react";
-
+import { open } from '@tauri-apps/api/shell';
+import { getBucketRegion } from "@/cli-functions/getBucketRegion";
+import { useUserSessionStore } from "@/store/useSessionStore";
 
 export interface CardDropdownProps {
     bucket: Bucket;
 }
 
 const CardDropdown = ({ bucket }: CardDropdownProps) => {
+    const { currentProfile } = useUserSessionStore();
 
     console.log('bucket', bucket)
     return (
@@ -57,9 +60,14 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                    onClick={(e) => {
+                    onClick={async (e) => {
                         e.stopPropagation();
-                        console.log('click')
+                        let bucketRegion = await getBucketRegion(bucket.Name, currentProfile);
+                        console.log('bucketRegion', bucketRegion)
+                        if (bucketRegion === null) {
+                            bucketRegion = 'us-east-1';
+                        }
+                        open("https://console.aws.amazon.com/s3/buckets/" + `${bucket.Name}` + "/?region=" + `${bucketRegion}` + "&tab=overview")
                     }}
                 >
                     <PanelTop size={16} className="mr-2" />
@@ -67,9 +75,15 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                 </DropdownMenuItem>
                 <DropdownMenuItem
                     className="text-destructive hover:bg-destructive hover:text-white"
-                    onClick={(e) => {
+                    onClick={async (e) => {
                         e.stopPropagation();
                         console.log('click')
+                        let bucketRegion = await getBucketRegion(bucket.Name, currentProfile);
+                        console.log('bucketRegion', bucketRegion)
+                        if (bucketRegion === null) {
+                            bucketRegion = 'us-east-1';
+                        }
+                        open("https://console.aws.amazon.com/s3/bucket/" + `${bucket.Name}` + "/delete?region=" + `${bucketRegion}`)
                     }}
                 >
                     <Trash2 size={16} className="mr-2" />
