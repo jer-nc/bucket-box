@@ -16,10 +16,10 @@ export async function getBucketContents(bucket: string,  profile: string) {
         if (child.code !== 0) {
             throw new Error(`Command failed with code ${child.code}. Error: ${errorOutput}`);
         }
-        console.log('child', child);
+        // console.log('child', child);
 
         const str = child.stdout.toString();
-        console.log('str', str);
+        // console.log('str', str);
         const strParse = JSON.parse(str);
 
         console.log('strParse', strParse);
