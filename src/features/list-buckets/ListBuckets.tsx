@@ -8,9 +8,14 @@ import { Separator } from '@/components/ui/separator';
 import Spinner from '@/components/custom/loaders/Spinner';
 import { useNavigate } from 'react-router-dom';
 
+interface Bucket {
+    Name: string;
+    CreationDate?: string;
+}
+
 function ListBuckets() {
     const { toast } = useToast();
-    const [buckets, setBuckets] = useState([]);
+    const [buckets, setBuckets] = useState<Bucket[]>([]);
     const { profiles, currentProfile } = useUserSessionStore();
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -20,8 +25,8 @@ function ListBuckets() {
             setLoading(true);
             const profile = localStorage.getItem('aws-profile') || '';
             const bucketList = await listAllBuckets(profile);
-            console.log('bucketList', bucketList)
-            setBuckets(bucketList);
+            console.log('bucketList', bucketList.Buckets)
+            setBuckets(bucketList.Buckets);
         } catch (error) {
             console.error(error);
             setBuckets([]);
@@ -77,9 +82,9 @@ function ListBuckets() {
                     </div>
                 ) : (
                     buckets.map((bucket, index) => (
-                        <div onClick={() => handleNavigate(bucket)} title={bucket} key={index} className='w-44 mx-auto p-4 flex flex-col gap-4 hover:bg-secondary rounded-md cursor-pointer'>
+                        <div onClick={() => handleNavigate(bucket.Name)} title={bucket.Name} key={index} className='w-44 mx-auto p-4 flex flex-col gap-4 hover:bg-secondary rounded-md cursor-pointer'>
                             <Folder fill='currentColor' width={24} height={24} className='mx-auto' size={24} />
-                            <p className='text-sm truncate mx-auto max-w-[10rem]'>{bucket}</p>
+                            <p className='text-sm truncate mx-auto max-w-[10rem]'>{bucket.Name}</p>
                         </div>
                     ))
                 )}

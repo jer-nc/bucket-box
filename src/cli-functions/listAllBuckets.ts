@@ -13,16 +13,19 @@ export async function listAllBuckets(profile: string) {
 
         const child = await command.execute();
 
+        console.log('child', child)
+
         if (child.code !== 0) {
             throw new Error(`Command failed with code ${child.code}. Error: ${errorOutput}`);
         }
 
         const str = child.stdout.toString();
         const strParse = JSON.parse(str);
+        console.log('strParse', strParse)
 
-        if (!strParse.length) {
-            throw new Error('No buckets found');
-        }
+        // if (!strParse.length) {
+        //     throw new Error('No buckets found');
+        // }
 
         return strParse;
     } catch (error: unknown) {

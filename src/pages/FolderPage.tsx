@@ -97,7 +97,7 @@ const FolderPage = () => {
       </div>
       <Separator className='my-2' />
 
-      <div>
+      <div className='py-12'>
         {loading ? (
           <div className='flex items-center justify-center py-8'>
             <Spinner />
@@ -110,7 +110,7 @@ const FolderPage = () => {
           <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4'>
 
             {bucketContents.map((file: File, index: number) => (
-              <div title={file.Key} key={index} className='flex flex-col items-center py-2 px-4'>
+              <div title={file.Key} key={index} className='w-44 mx-auto p-4 flex flex-col gap-4 hover:bg-secondary rounded-md cursor-pointer'>
                 {
                   file.Size === 0 ? (
                     <Folder fill='currentColor' width={24} height={24} className='mx-auto' size={24} />
@@ -119,8 +119,8 @@ const FolderPage = () => {
                   )
                 }
                 <p className='text-sm truncate mx-auto max-w-[10rem]'>{file.Key}</p>
-                <p className='text-sm truncate mx-auto max-w-[10rem] text-muted-foreground'>{file.LastModified}</p>
-                <p className='text-sm truncate mx-auto max-w-[10rem] text-muted-foreground'>{file.Size}</p>
+                {/* <p className='text-sm truncate mx-auto max-w-[10rem] text-muted-foreground'>{file.LastModified}</p>
+                <p className='text-sm truncate mx-auto max-w-[10rem] text-muted-foreground'>{file.Size}</p> */}
               </div>
             ))}
           </div>
