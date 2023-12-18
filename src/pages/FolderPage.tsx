@@ -12,13 +12,17 @@ const FolderPage = () => {
   const { pathname: currentPathname } = useLocation()
   const { profiles, currentProfile } = useUserSessionStore();
   const [loading, setLoading] = useState(false);
-  const [bucketContents, setBucketContents] = useState([]);
+  const [bucketContents, setBucketContents] = useState<File[]>([]);
   const navigate = useNavigate();
 
   interface File {
     Key: string;
     LastModified?: string;
     Size?: number;
+  }
+
+  interface TopLevelItems {
+    [key: string]: File;
   }
 
   console.log('currentPathname', currentPathname)
@@ -33,9 +37,8 @@ const FolderPage = () => {
       console.log('bucketLocation', bucketLocation)
       const response = await getBucketContents(folderName, profile, bucketLocation);
       console.log('bucketContents', response)
-      // setBucketContents(bucketContents);
       if (response.Contents) {
-        const topLevelItems = {};
+        const topLevelItems: TopLevelItems = {};
 
         response.Contents.forEach((item: File) => {
           const keySegments = item.Key.split('/');
@@ -52,7 +55,6 @@ const FolderPage = () => {
 
         const contents = Object.values(topLevelItems);
         setBucketContents(contents);
-        // setBucketContents(topLevelItems);
       } else {
         setBucketContents([]);
       }
