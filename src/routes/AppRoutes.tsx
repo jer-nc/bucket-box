@@ -6,7 +6,7 @@ function AppRoutes() {
   return (
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="carpeta/*" element={<FolderPage />} />
+        <Route path="buckets/*" element={<FolderPage />} />
       </Routes>
   );
 }

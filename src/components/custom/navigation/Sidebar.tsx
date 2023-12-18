@@ -45,7 +45,7 @@ const Sidebar = () => {
     <div className='w-12 py-4 fixed top-14 h-screen bg-background border-r'>
       <div className='grid gap-2 justify-center'>
         {routes.map((route, index) => (
-          <div key={index} className={`${currentPathname === route.path && 'bg-secondary '} text-muted-foreground flex items-center gap-2 p-2 hover:bg-secondary cursor-pointer rounded-md`} onClick={() => handleNavigation(route.path)}>
+          <div key={index} className={`${(currentPathname === route.path || route.path === '/' && currentPathname.includes('/buckets')) && 'bg-secondary '} text-muted-foreground flex items-center gap-2 p-2 hover:bg-secondary cursor-pointer rounded-md`} onClick={() => handleNavigation(route.path)}>
             {route.icon}
           </div>
         ))}

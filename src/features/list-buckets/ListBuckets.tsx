@@ -6,12 +6,14 @@ import { listAllBuckets } from '@/cli-functions/listAllBuckets';
 import { useUserSessionStore } from '@/store/useSessionStore';
 import { Separator } from '@/components/ui/separator';
 import Spinner from '@/components/custom/loaders/Spinner';
+import { useNavigate } from 'react-router-dom';
 
 function ListBuckets() {
     const { toast } = useToast();
     const [buckets, setBuckets] = useState([]);
     const { profiles, currentProfile } = useUserSessionStore();
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleListBuckets = async () => {
         try {
@@ -33,6 +35,10 @@ function ListBuckets() {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleNavigate = (bucket: string) => {
+        navigate(`/buckets/${bucket}`);
     };
 
     useEffect(() => {
@@ -70,7 +76,7 @@ function ListBuckets() {
                     </div>
                 ) : (
                     buckets.map((bucket, index) => (
-                        <div title={bucket} key={index} className='w-44 mx-auto p-4 flex flex-col gap-4 hover:bg-secondary rounded-md cursor-pointer'>
+                        <div onClick={() => handleNavigate(bucket)} title={bucket} key={index} className='w-44 mx-auto p-4 flex flex-col gap-4 hover:bg-secondary rounded-md cursor-pointer'>
                             <Folder fill='currentColor' width={24} height={24} className='mx-auto' size={24} />
                             <p className='text-sm truncate mx-auto max-w-[10rem]'>{bucket}</p>
                         </div>
