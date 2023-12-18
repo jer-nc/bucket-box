@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Folder, MoreVertical, Plus, RefreshCcw } from 'lucide-react';
+import { Folder, Plus, RefreshCcw } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { listAllBuckets } from '@/cli-functions/listAllBuckets';
@@ -7,8 +7,9 @@ import { useUserSessionStore } from '@/store/useSessionStore';
 import Spinner from '@/components/custom/loaders/Spinner';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
+import CardDropdown from '@/components/custom/dropdowns/CardDropdown';
 
-interface Bucket {
+export interface Bucket {
     Name: string;
     CreationDate?: string;
 }
@@ -87,16 +88,7 @@ function ListBuckets() {
                                 <Folder fill='currentColor' size={16} />
                                 <p className='text-start text-sm truncate max-w-[10rem]'>{bucket.Name}</p>
                             </div>
-                            <Button
-                                size='icon'
-                                variant='ghost'
-                                onClick={(e) => {
-                                    e.stopPropagation(); // Detiene la propagación del clic hacia la Card
-                                    // Aquí puedes manejar lo que deseas que haga el botón al ser clicado
-                                }}
-                            >
-                                <MoreVertical size={16} />
-                            </Button>
+                            <CardDropdown bucket={bucket} />
                         </Card>
                     ))
                 )}
