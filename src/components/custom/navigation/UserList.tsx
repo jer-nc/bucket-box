@@ -20,7 +20,7 @@ const UserListSelect = () => {
             <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder={currentProfile} defaultValue={currentProfile} />
             </SelectTrigger>
-            <SelectContent className="z-[60]">
+            <SelectContent className="z-[120]">
                 {profiles.length === 0 && (
                     <SelectItem value="no-profile" disabled>
                         No profiles found

@@ -2,7 +2,8 @@ import { getBucketContents } from '@/cli-functions/getBucketContents'
 import { getBucketRegion } from '@/cli-functions/getBucketRegion'
 import Spinner from '@/components/custom/loaders/Spinner'
 import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
+import { Card } from '@/components/ui/card'
+import { toast } from '@/components/ui/use-toast'
 import { useUserSessionStore } from '@/store/useSessionStore'
 import { ChevronLeft, File, Folder, RefreshCcw } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -41,7 +42,7 @@ const FolderPage = () => {
         const topLevelItems: TopLevelItems = {};
 
         response.Contents.forEach((item: File) => {
-          const keySegments = item.Key.split('/');
+          const keySegments = item.Key.split(/[\\/]/);
           const topLevelFolder = keySegments[0];
 
           if (!topLevelItems[topLevelFolder]) {
@@ -61,6 +62,14 @@ const FolderPage = () => {
     } catch (error) {
       console.error(error);
       setBucketContents([]);
+      if (error instanceof Error) {
+        toast({
+            title: 'Error',
+            description: error.message,
+            variant: 'destructive',
+            className: 'text-xs',
+        });
+    }
     } finally {
       setLoading(false);
     }
@@ -80,24 +89,23 @@ const FolderPage = () => {
   }
 
   return (
-    <div>
-      <div className='flex justify-between items-center'>
+    <div className='relative'>
+      <div className='top-14 sticky w-full z-[100]  flex justify-between items-center bg-background py-4'>
         <div className='flex items-center gap-2'>
           <Button onClick={handleNavigate} size='icon' variant='ghost' >
             <ChevronLeft size={18} />
           </Button>
           <p className='font-semibold'>
             {currentPathname.split('/').pop()}
-            <span className='text-muted-foreground text-sm ml-2'>(Folder)</span>
+            <span className='text-muted-foreground text-sm ml-2'>(Bucket)</span>
           </p>
         </div>
         <Button size='icon' variant='ghost' >
           <RefreshCcw onClick={handleGetBucketContents} size={18} />
         </Button>
       </div>
-      <Separator className='my-2' />
 
-      <div className='py-12 '>
+      <div className='py-4'>
         {loading ? (
           <div style={{ height: 'calc(100vh - 14.5rem)' }} className='mx-auto text-center flex flex-col justify-center'>
             <Spinner />
@@ -107,21 +115,21 @@ const FolderPage = () => {
             <p className='text-sm truncate mx-auto max-w-[10rem] text-muted-foreground'>No files found</p>
           </div>
         ) : (
-          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
 
             {bucketContents.map((file: File, index: number) => (
-              <div title={file.Key} key={index} className='w-44 mx-auto p-4 flex flex-col gap-4 hover:bg-secondary rounded-md cursor-pointer'>
+              <Card title={file.Key} key={index} className='p-4 flex items-center justify-start gap-4 hover:bg-secondary rounded-md cursor-pointer'>
                 {
                   file.Size === 0 ? (
-                    <Folder fill='currentColor' width={24} height={24} className='mx-auto' size={24} />
+                    <Folder fill='currentColor' width={24} height={24} size={24} />
                   ) : (
-                    <File fill='currentColor' width={24} height={24} className='mx-auto' size={24} />
+                    <File fill='currentColor' width={24} height={24} size={24} />
                   )
                 }
-                <p className='text-sm truncate mx-auto max-w-[10rem]'>{file.Key}</p>
+                <p className='text-sm truncate max-w-[10rem]'>{file.Key}</p>
                 {/* <p className='text-sm truncate mx-auto max-w-[10rem] text-muted-foreground'>{file.LastModified}</p>
                 <p className='text-sm truncate mx-auto max-w-[10rem] text-muted-foreground'>{file.Size}</p> */}
-              </div>
+              </Card>
             ))}
           </div>
 

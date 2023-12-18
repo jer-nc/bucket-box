@@ -1,4 +1,3 @@
-'use client'
 import React from 'react'
 import Navbar from '../navigation/Navbar'
 import Sidebar from '../navigation/Sidebar'
@@ -17,7 +16,7 @@ const AppLayout = ({ children }: Props) => {
             <ScrollArea className="h-screen w-full">
                 <Navbar />
                 <Sidebar />
-                <div className='pt-24 px-24 max-w-[2000px] w-full mx-auto'>
+                <div className='pt-16 px-24 max-w-[2000px] w-full mx-auto'>
                     {children}
                 </div>
             </ScrollArea>

@@ -1,12 +1,12 @@
 import { Button } from '@/components/ui/button';
-import { Folder, Plus, RefreshCcw } from 'lucide-react';
+import { Folder, MoreVertical, Plus, RefreshCcw } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { listAllBuckets } from '@/cli-functions/listAllBuckets';
 import { useUserSessionStore } from '@/store/useSessionStore';
-import { Separator } from '@/components/ui/separator';
 import Spinner from '@/components/custom/loaders/Spinner';
 import { useNavigate } from 'react-router-dom';
+import { Card } from '@/components/ui/card';
 
 interface Bucket {
     Name: string;
@@ -54,15 +54,15 @@ function ListBuckets() {
     }, [profiles, currentProfile]);
 
     return (
-        <div>
-            <div className='flex justify-between items-center'>
+        <div className='relative'>
+            <div className='top-14 sticky w-full z-[100]  flex justify-between items-center bg-background py-4'>
                 <p className='font-semibold'>S3 Buckets</p>
                 <Button size='icon' variant='ghost' onClick={handleListBuckets}>
                     <RefreshCcw size={18} />
                 </Button>
             </div>
-            <Separator className='my-2' />
-            <div className={`py-12 ${loading || profiles.length === 0 || buckets.length === 0 ? 'flex flex-col justify-center' : 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4'}`}>
+            {/* <Separator className='my-2' />  */}
+            <div className={`py-4 ${loading || profiles.length === 0 || buckets.length === 0 ? 'flex flex-col justify-center' : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'}`}>
                 {loading ? (
                     <div style={{ height: 'calc(100vh - 14.5rem)' }} className='flex items-center justify-center py-8'>
                         <Spinner />
@@ -73,7 +73,7 @@ function ListBuckets() {
                     </div>
                 ) : buckets.length === 0 && !loading ? (
                     <div style={{ height: 'calc(100vh - 14.5rem)' }} className='mx-auto text-center flex flex-col justify-center'>
-                        <Folder fill='currentColor' width={24} height={24} className='mx-auto' size={24} />
+                        <Folder fill='currentColor' className='mx-auto' size={24} />
                         <p className='text-sm truncate mx-auto max-w-[10rem] text-muted-foreground'>No buckets available</p>
                         <Button className='mt-4'>
                             Create Bucket
@@ -82,10 +82,22 @@ function ListBuckets() {
                     </div>
                 ) : (
                     buckets.map((bucket, index) => (
-                        <div onClick={() => handleNavigate(bucket.Name)} title={bucket.Name} key={index} className='w-44 mx-auto p-4 flex flex-col gap-4 hover:bg-secondary rounded-md cursor-pointer'>
-                            <Folder fill='currentColor' width={24} height={24} className='mx-auto' size={24} />
-                            <p className='text-sm truncate mx-auto max-w-[10rem]'>{bucket.Name}</p>
-                        </div>
+                        <Card onClick={() => handleNavigate(bucket.Name)} title={bucket.Name} key={index} className='p-4 flex items-center justify-between gap-4 hover:bg-secondary/30 rounded-md cursor-pointer'>
+                            <div className='flex items-center gap-4'>
+                                <Folder fill='currentColor' size={16} />
+                                <p className='text-start text-sm truncate max-w-[10rem]'>{bucket.Name}</p>
+                            </div>
+                            <Button
+                                size='icon'
+                                variant='ghost'
+                                onClick={(e) => {
+                                    e.stopPropagation(); // Detiene la propagación del clic hacia la Card
+                                    // Aquí puedes manejar lo que deseas que haga el botón al ser clicado
+                                }}
+                            >
+                                <MoreVertical size={16} />
+                            </Button>
+                        </Card>
                     ))
                 )}
             </div>
