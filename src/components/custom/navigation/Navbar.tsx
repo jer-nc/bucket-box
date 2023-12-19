@@ -7,7 +7,6 @@ const Navbar = () => {
             <div className='w-full flex justify-between items-center'>
                 <div className='flex gap-2 items-center'>
                     <img src={logo} alt="logo" className='w-6' />
-                    <h1 className='font-semibold tracking-tighter'>Bucket Box</h1>
                 </div>
                 <div className='flex items-center'>
                     <div className='flex items-center'>
