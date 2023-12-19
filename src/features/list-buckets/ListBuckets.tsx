@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Folder, Plus, RefreshCcw } from 'lucide-react';
+import {  Plus, RefreshCcw } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { listAllBuckets } from '@/cli-functions/listAllBuckets';
@@ -8,7 +8,7 @@ import Spinner from '@/components/custom/loaders/Spinner';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import CardDropdown from '@/components/custom/dropdowns/CardDropdown';
-
+import bucketIcon from '@/assets/icons/bucket-icon.svg';
 
 export interface Bucket {
     Name: string;
@@ -75,7 +75,9 @@ function ListBuckets() {
                     </div>
                 ) : buckets.length === 0 && !loading ? (
                     <div style={{ height: 'calc(100vh - 14.5rem)' }} className='mx-auto text-center flex flex-col justify-center'>
-                        <Folder fill='currentColor' className='mx-auto' size={24} />
+                        {/* <Folder fill='currentColor' className='mx-auto' size={24} />
+                         */}
+
                         <p className='text-sm truncate mx-auto max-w-[10rem] text-muted-foreground'>No buckets available</p>
                         <Button className='mt-4'>
                             Create Bucket
@@ -86,7 +88,8 @@ function ListBuckets() {
                     buckets.map((bucket, index) => (
                         <Card onClick={() => handleNavigate(bucket.Name)} title={bucket.Name} key={index} className='p-4 flex items-center justify-between gap-4 hover:bg-secondary/30 rounded-md cursor-pointer'>
                             <div className='flex items-center gap-4'>
-                                <Folder fill='currentColor' size={16} />
+                                {/* <Folder fill='currentColor' size={16} /> */}
+                                <img src={bucketIcon} alt='bucket icon' className='w-5 h-5' />
                                 <p className='text-start text-sm truncate max-w-[10rem]'>{bucket.Name}</p>
                             </div>
                             <CardDropdown bucket={bucket} />

@@ -12,10 +12,9 @@ import { toast } from "@/components/ui/use-toast";
 
 const SyncBucketDialog = ({ bucket }: CardDropdownProps) => {
     const [selectedPath, setSelectedPath] = useState<string | null>(null);
-    const [responseLog, setResponseLog] = useState<string>(); // TODO: Mostrar el log de la respuesta de la función syncBucketContents
+    const [responseLog, setResponseLog] = useState<string>(); 
     const { currentProfile } = useUserSessionStore();
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
     const openDialog = async () => {
         const selected = await open({
@@ -25,6 +24,7 @@ const SyncBucketDialog = ({ bucket }: CardDropdownProps) => {
 
         if (selected === null) {
             setSelectedPath(null);
+            setResponseLog("")
         } else {
             console.log(selected);
             setSelectedPath(selected as string);
@@ -33,7 +33,6 @@ const SyncBucketDialog = ({ bucket }: CardDropdownProps) => {
 
     const handleSync = async () => {
         setLoading(true);
-        setError(null);
 
         try {
             const region = await getBucketRegion(bucket.Name, currentProfile);
@@ -50,7 +49,6 @@ const SyncBucketDialog = ({ bucket }: CardDropdownProps) => {
                 setResponseLog("No files downloaded.");
             }
         } catch (error) {
-            setError("Error occurred during sync.");
             if (error instanceof Error) {
                 toast({
                     title: 'Error',
@@ -86,7 +84,7 @@ const SyncBucketDialog = ({ bucket }: CardDropdownProps) => {
                     {
                         selectedPath && (
                             <div className="text-xs font-semibold text-muted-foreground">
-                                Selected Path: {selectedPath}
+                                Selected Path: <span className="font-normal">{selectedPath}</span>
                             </div>
                         )
                     }

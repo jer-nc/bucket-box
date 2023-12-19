@@ -1,6 +1,8 @@
-import {  Folder, FolderPlus, Settings, User } from 'lucide-react'
+import {  Plus, Settings, User } from 'lucide-react'
 import { ToggleThemeButton } from './ToggleThemeButton'
 import { useLocation, useNavigate  } from 'react-router-dom'
+import bucketIconBtn from '@/assets/icons/bucket-icon-btn.svg';
+
 const Sidebar = () => {
   const { pathname: currentPathname } = useLocation()
   const navigate  = useNavigate()
@@ -11,7 +13,7 @@ const Sidebar = () => {
     {
       name: 'S3 Buckets',
       path: '/',
-      icon: <Folder size={18} />
+      icon: <img src={bucketIconBtn} alt="bucket" className="w-5 h-5" />
     },
     // {
     //   name: 'buckets',
@@ -21,7 +23,7 @@ const Sidebar = () => {
     {
       name: 'Create Bucket',
       path: '/create-bucket',
-      icon: <FolderPlus size={18} />
+      icon: <Plus size={18} />
     },
     {
       name: 'Settings',

@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Bucket } from "@/features/list-buckets/ListBuckets";
-import { Eye, MoreVertical, PanelTop, Trash2 } from "lucide-react";
+import { MoreVertical, PanelTop, Trash2 } from "lucide-react";
 import { open } from '@tauri-apps/api/shell';
 import { getBucketRegion } from "@/cli-functions/getBucketRegion";
 import { useUserSessionStore } from "@/store/useSessionStore";
 import SyncBucketDialog from "../dialogs/SyncBucketDialog";
+import BucketDetailSheet from "../sheets/BucketDetailSheet";
 
 export interface CardDropdownProps {
     bucket: Bucket;
@@ -14,7 +15,7 @@ export interface CardDropdownProps {
 const CardDropdown = ({ bucket }: CardDropdownProps) => {
     const { currentProfile } = useUserSessionStore();
 
-    console.log('bucket', bucket)
+    // console.log('bucket', bucket)
     return (
         <>
             <DropdownMenu>
@@ -45,11 +46,11 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                     <DropdownMenuItem
                         onClick={(e) => {
                             e.stopPropagation();
+                            e.preventDefault();
                             console.log('click')
                         }}
                     >
-                        <Eye size={16} className="mr-2" />
-                        Details
+                        <BucketDetailSheet bucket={bucket} />
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         onClick={(e) => {
