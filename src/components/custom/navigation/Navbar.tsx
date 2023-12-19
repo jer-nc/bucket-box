@@ -1,4 +1,3 @@
-import React from 'react'
 import UserListSelect from './UserList'
 import logo from '../../../assets/logo-bucket-box.svg'
 

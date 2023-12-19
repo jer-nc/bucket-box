@@ -7,7 +7,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "vite-tauri-bucket-box",
+    "productName": "Bucket Box",
     "version": "0.1.0"
   },
   "tauri": {
@@ -55,14 +55,14 @@
       },
       "externalBin": [],
       "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
+        "icons/bb-32.png",
+        "icons/bb-128.png",
+        "icons/bb-256.png",
+        "icons/icns-bb.icns",
+        "icons/i-bb.ico"
       ],
       "identifier": "com.bucket-box.dev",
-      "longDescription": "",
+      "longDescription": "Bucket Box is a desktop application that allows you to manage your AWS S3 buckets and objects. It is built with Tauri, React, and TypeScript.",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
@@ -71,7 +71,7 @@
         "signingIdentity": null
       },
       "resources": [],
-      "shortDescription": "",
+      "shortDescription": "Bucket Box is a desktop application that allows you to manage your AWS S3 buckets and objects.",
       "targets": "all",
       "windows": {
         "certificateThumbprint": null,
