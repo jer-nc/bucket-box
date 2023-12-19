@@ -1,11 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Bucket } from "@/features/list-buckets/ListBuckets";
-import { Eye, FolderDown, MoreVertical, PanelTop, Trash2 } from "lucide-react";
+import { Eye, MoreVertical, PanelTop, Trash2 } from "lucide-react";
 import { open } from '@tauri-apps/api/shell';
 import { getBucketRegion } from "@/cli-functions/getBucketRegion";
 import { useUserSessionStore } from "@/store/useSessionStore";
-import { useState } from "react";
 import SyncBucketDialog from "../dialogs/SyncBucketDialog";
 
 export interface CardDropdownProps {
@@ -14,7 +13,6 @@ export interface CardDropdownProps {
 
 const CardDropdown = ({ bucket }: CardDropdownProps) => {
     const { currentProfile } = useUserSessionStore();
-    const [isOpen, setIsOpen] = useState(false);
 
     console.log('bucket', bucket)
     return (
@@ -57,7 +55,6 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                         onClick={(e) => {
                             e.stopPropagation();
                             e.preventDefault();
-                            console.log('click')
                         }}
                     >
                         <SyncBucketDialog />
@@ -81,7 +78,6 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                         className="text-destructive"
                         onClick={async (e) => {
                             e.stopPropagation();
-                            console.log('click')
                             let bucketRegion = await getBucketRegion(bucket.Name, currentProfile);
                             console.log('bucketRegion', bucketRegion)
                             if (bucketRegion === null) {

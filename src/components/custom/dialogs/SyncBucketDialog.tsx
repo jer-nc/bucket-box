@@ -1,15 +1,25 @@
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { FolderDown } from "lucide-react";
+import { open } from '@tauri-apps/api/dialog';
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 const SyncBucketDialog = () => {
+    const [selectedPath, setSelectedPath] = useState<string | null>(null);
 
+    const openDialog = async () => {
+        const selected = await open({
+            directory: true,
+            multiple: false, 
+        });
+
+        if (selected === null) {
+            setSelectedPath(null);
+        } else {
+            console.log(selected);
+            setSelectedPath(selected as string);
+        }
+    }
 
     return (
         <Dialog>
@@ -21,11 +31,25 @@ const SyncBucketDialog = () => {
             </DialogTrigger>
             <DialogContent >
                 <DialogHeader>
-                    <DialogTitle>Are you sure absolutely sure?</DialogTitle>
-                    <DialogDescription>
-                        This action cannot be undone. This will permanently delete your account
-                        and remove your data from our servers.
+                    <DialogTitle>Sync Bucket Contents Locally</DialogTitle>
+                    <DialogDescription className="py-4">
+                        Choose a local folder to sync the contents of the bucket with. This will download all the files in the bucket to the local folder.
                     </DialogDescription>
+
+                    <Button variant='outline' onClick={openDialog}>
+                        Choose Folder
+                    </Button>
+                    {
+                        selectedPath && (
+                            <div className="text-xs font-semibold text-muted-foreground">
+                                Selected Path: {selectedPath}
+                            </div>
+                        )
+                    }
+                    <DialogFooter className="pt-4">
+                        <Button variant="outline">Cancel</Button>
+                        <Button disabled={!selectedPath} >Sync</Button>
+                    </DialogFooter>
                 </DialogHeader>
             </DialogContent>
         </Dialog>
