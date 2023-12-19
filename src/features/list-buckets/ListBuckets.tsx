@@ -57,7 +57,7 @@ function ListBuckets() {
 
     return (
         <div className='relative'>
-            <div className='top-14 sticky w-full z-[100]  flex justify-between items-center bg-background py-4'>
+            <div className='top-14 sticky w-full z-50  flex justify-between items-center bg-background py-4'>
                 <p className='font-semibold'>S3 Buckets</p>
                 <Button size='icon' variant='ghost' onClick={handleListBuckets}>
                     <RefreshCcw size={18} />

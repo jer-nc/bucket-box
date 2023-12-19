@@ -1,0 +1,44 @@
+import { Command } from '@tauri-apps/api/shell';
+
+export async function syncBucketContents( localPath: string, bucketName: string, profile: string , region: string) {
+    try {
+        console.log('region', region);
+        // Si la región es 'us-east-1', se usa el valor predeterminado
+        if (region === null) {
+            region = 'us-east-1';
+        }
+
+        console.log('region 2', region);
+
+        const command = new Command('aws-cli', ["s3", "sync", `s3://${bucketName}` , localPath,  "--region", region, "--profile", profile]);
+        
+        console.log('command', command);
+        let errorOutput = '';
+
+        command.stderr.on('data', data => {
+            errorOutput += data.toString();
+        });
+
+        command.stdout.on('data', data => {
+            // Esta línea se ejecutará cada vez que el comando escriba algo en su salida estándar
+            console.log('Archivo descargado:', data.toString());
+        });
+
+        const child = await command.execute();
+
+        if (child.code !== 0) {
+            throw new Error(`Command failed with code ${child.code}. Error: ${errorOutput}`);
+        }
+        console.log('child', child);
+
+        const str = child.stdout.toString();
+        
+
+        return str;
+    } catch (error) {
+        if (error instanceof Error) {
+            console.error(error.message);
+            throw new Error(error.message);
+        }
+    }
+}
