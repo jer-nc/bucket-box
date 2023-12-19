@@ -1,16 +1,17 @@
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { FolderDown } from "lucide-react";
 import { open } from '@tauri-apps/api/dialog';
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { CardDropdownProps } from "../dropdowns/CardDropdown";
 
-const SyncBucketDialog = () => {
+const SyncBucketDialog = ({ bucket }: CardDropdownProps) => {
     const [selectedPath, setSelectedPath] = useState<string | null>(null);
 
     const openDialog = async () => {
         const selected = await open({
             directory: true,
-            multiple: false, 
+            multiple: false,
         });
 
         if (selected === null) {
@@ -33,7 +34,7 @@ const SyncBucketDialog = () => {
                 <DialogHeader>
                     <DialogTitle>Sync Bucket Contents Locally</DialogTitle>
                     <DialogDescription className="py-4">
-                        Choose a local folder to sync the contents of the bucket with. This will download all the files in the bucket to the local folder.
+                        Choose a local folder to sync the contents of <span className="font-semibold">{bucket.Name}</span>. This will download all the files in the bucket to the local folder.
                     </DialogDescription>
 
                     <Button variant='outline' onClick={openDialog}>
@@ -47,7 +48,9 @@ const SyncBucketDialog = () => {
                         )
                     }
                     <DialogFooter className="pt-4">
-                        <Button variant="outline">Cancel</Button>
+                        <DialogClose asChild>
+                            <Button variant="outline">Cancel</Button>
+                        </DialogClose>
                         <Button disabled={!selectedPath} >Sync</Button>
                     </DialogFooter>
                 </DialogHeader>

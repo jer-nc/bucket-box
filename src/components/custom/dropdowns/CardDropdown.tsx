@@ -57,7 +57,7 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                             e.preventDefault();
                         }}
                     >
-                        <SyncBucketDialog />
+                        <SyncBucketDialog bucket={bucket} />
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
