@@ -5,8 +5,10 @@ import { getBucketDetails } from "@/cli-functions/getBucketDetails"
 import { toast } from "@/components/ui/use-toast"
 import { useUserSessionStore } from "@/store/useSessionStore"
 import { useEffect, useState } from "react"
-import Spinner from "../loaders/Spinner"
-
+import SheetSkeleton from "../skeletons/SheetSkeleton"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 interface BucketDetail {
     location: string;
@@ -66,9 +68,11 @@ const BucketDetailSheet = ({ bucket }: CardDropdownProps) => {
                         </p>
 
                         {
-                            loading ? (<Spinner />) : (
-                                <div className="py-4">
-                                    <div>
+                            loading ? (
+                                <SheetSkeleton />
+                            ) : (
+                                <ScrollArea className="h-[90vh] ">
+                                    <div className="py-6 pr-4">
                                         <p className="text-sm font-semibold">
                                             Region:
                                             <span className="ml-2 font-normal text-muted-foreground">
@@ -81,26 +85,22 @@ const BucketDetailSheet = ({ bucket }: CardDropdownProps) => {
                                                 {bucketDetails?.bucketArn}
                                             </span>
                                         </p>
-                                        <p className="text-sm font-semibold mt-3">
-                                            Bucket Policy:
-                                            <br />
-                                            <span className="font-normal text-muted-foreground">
-                                                <code>
-                                                    {bucketDetails?.policy || 'No policy found'}
-                                                </code>
-                                            </span>
+                                        <p className="text-sm font-semibold mt-3 mb-2">
+                                            Bucket Policy
                                         </p>
-                                        <p className="text-sm font-semibold mt-3">
-                                            Bucket CORS Rules:
-                                            <br />
-                                            <span className="font-normal text-muted-foreground">
-                                                <code>
-                                                    {JSON.stringify(bucketDetails?.corsRules) || 'No CORS rules found'}
-                                                </code>
-                                            </span>
+                                        <SyntaxHighlighter className="rounded-md" language="json" style={vs2015}>
+                                            {bucketDetails?.policy ? JSON.stringify(JSON.parse(bucketDetails.policy), null, 2) : 'No policy found'}
+                                        </SyntaxHighlighter>
+
+
+                                        <p className="text-sm font-semibold mt-3 mb-2">
+                                            Bucket CORS Rules
                                         </p>
+                                        <SyntaxHighlighter className="rounded-md" language="json" style={vs2015}>
+                                            {JSON.stringify(bucketDetails?.corsRules, null, 2) || 'No CORS rules found'}
+                                        </SyntaxHighlighter>
                                     </div>
-                                </div>
+                                </ScrollArea>
                             )
                         }
                     </SheetHeader>

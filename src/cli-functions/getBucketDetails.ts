@@ -12,9 +12,9 @@ export async function getBucketDetails(bucket: string, profile: string) {
         const policyChild = await policyCommand.execute();
         let policy;
         if (policyChild.stdout.length > 0) {
-            policy = JSON.parse(policyChild.stdout.toString()).Policy;
+            policy = JSON.parse(policyChild.stdout).Policy;
         } else {
-            policy = 'No policy found';
+            policy = undefined;
         }
         // const policy = JSON.parse(policyChild.stdout.toString()).Policy;
 

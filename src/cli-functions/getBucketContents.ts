@@ -11,7 +11,7 @@ export async function getBucketContents(bucket: string, profile: string, region:
 
         console.log('region 2', region);
 
-        const command = new Command('aws-cli', ["s3api", "list-objects-v2", '--bucket', bucket, "--region", region, "--output", "json", "--profile", profile]);
+        const command = new Command('aws-cli', ["s3", "ls", 's3://' + bucket + '/', "--region", region, "--output", "json", "--profile", profile]);
 
         console.log('command', command);
         let errorOutput = '';
@@ -28,15 +28,58 @@ export async function getBucketContents(bucket: string, profile: string, region:
         console.log('child', child);
 
         const str = child.stdout.toString();
-        console.log('str', str);
-        const strParse = JSON.parse(str);
+        // Dividir las líneas de texto en un array
+        const lines = str.trim().split('\n');
 
-        console.log('strParse', strParse);
-        if (!str.length) {
-            throw new Error('No buckets found');
-        }
+        // Filtrar y mapear las líneas para crear objetos JSON según tu lógica
+        const contents = lines.map((line: string) => {
+            const elements = line.trim().split(/\s+(?=\S+$)/).map(line => line.replace(/\\/g, '/'));
 
-        return strParse;
+            console.log('elements', elements)
+            // const elements = line.trim().split(/\s+(?=\S+$)/);
+            if (elements.length === 2 && elements[0] === 'PRE' ) {
+                // Es un directorio
+                return {
+                    type: 'folder',
+                    name: elements[1].slice(0, -1), // Eliminar la barra diagonal final del nombre del directorio
+                    size: null,
+                    lastModified: null,
+                };
+            } else if (elements.length >= 4) {
+                // Es un archivo
+                const isFile = elements[0].match(/^\d{4}-\d{2}-\d{2}$/) !== null;
+                const sizeIndex = isFile ? 2 : 3;
+                const lastIndex = elements.length - 1;
+
+                const name = elements.slice(sizeIndex + 1).join(' ');
+                const size = isFile ? parseInt(elements[sizeIndex]) : null;
+
+                const dateTimeInfo = elements.slice(0, lastIndex - (isFile ? 1 : 0));
+                const lastModified = dateTimeInfo.join(' ');
+
+                return {
+                    type: isFile ? 'file' : 'folder',
+                    name: isFile ? name : elements[lastIndex],
+                    size,
+                    lastModified: isFile ? lastModified : null,
+                };
+            } else {
+                // Otro tipo de línea que no corresponde a un archivo ni a un directorio
+                return null;
+            }
+        }).filter(Boolean);
+
+        console.log('contents', contents)
+
+        // console.log('str', str);
+        // const strParse = JSON.parse(str);
+
+        // console.log('strParse', strParse);
+        // if (!str.length) {
+        //     throw new Error('No buckets found');
+        // }
+
+        return contents;
 
     } catch (error: unknown) {
         if (error instanceof Error) {

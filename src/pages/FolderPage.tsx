@@ -17,14 +17,12 @@ const FolderPage = () => {
   const navigate = useNavigate();
 
   interface File {
-    Key: string;
-    LastModified?: string;
-    Size?: number;
+    name: string;
+    lastModified?: string;
+    size?: number;
+    type: string;
   }
 
-  interface TopLevelItems {
-    [key: string]: File;
-  }
 
   console.log('currentPathname', currentPathname)
 
@@ -38,24 +36,8 @@ const FolderPage = () => {
       console.log('bucketLocation', bucketLocation)
       const response = await getBucketContents(folderName, profile, bucketLocation);
       console.log('bucketContents', response)
-      if (response.Contents) {
-        const topLevelItems: TopLevelItems = {};
-
-        response.Contents.forEach((item: File) => {
-          const keySegments = item.Key.split(/[\\/]/);
-          const topLevelFolder = keySegments[0];
-
-          if (!topLevelItems[topLevelFolder]) {
-            topLevelItems[topLevelFolder] = {
-              ...item,
-              Key: topLevelFolder, // Reemplaza la clave completa por el nombre de la carpeta principal
-              Size: keySegments.length > 1 ? 0 : item.Size, // Si tiene más de un segmento, es una carpeta, por lo que el tamaño es 0
-            };
-          }
-        });
-
-        const contents = Object.values(topLevelItems);
-        setBucketContents(contents);
+      if (response) {
+        setBucketContents(response as File[]);
       } else {
         setBucketContents([]);
       }
@@ -64,12 +46,12 @@ const FolderPage = () => {
       setBucketContents([]);
       if (error instanceof Error) {
         toast({
-            title: 'Error',
-            description: error.message,
-            variant: 'destructive',
-            className: 'text-xs',
+          title: 'Error',
+          description: error.message,
+          variant: 'destructive',
+          className: 'text-xs',
         });
-    }
+      }
     } finally {
       setLoading(false);
     }
@@ -118,15 +100,15 @@ const FolderPage = () => {
           <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
 
             {bucketContents.map((file: File, index: number) => (
-              <Card title={file.Key} key={index} className='p-4 flex items-center justify-start gap-4 hover:bg-secondary rounded-md cursor-pointer'>
+              <Card title={file.name} key={index} className='p-4 flex items-center justify-start gap-4 hover:bg-secondary rounded-md cursor-pointer'>
                 {
-                  file.Size === 0 ? (
+                  file.type  === 'folder' ? (
                     <Folder fill='currentColor' width={24} height={24} size={24} />
                   ) : (
                     <File fill='currentColor' width={24} height={24} size={24} />
                   )
                 }
-                <p className='text-sm truncate max-w-[10rem]'>{file.Key}</p>
+                <p className='text-sm truncate max-w-[10rem]'>{file.name}</p>
                 {/* <p className='text-sm truncate mx-auto max-w-[10rem] text-muted-foreground'>{file.LastModified}</p>
                 <p className='text-sm truncate mx-auto max-w-[10rem] text-muted-foreground'>{file.Size}</p> */}
               </Card>
