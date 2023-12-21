@@ -1,17 +1,24 @@
 import { Command } from '@tauri-apps/api/shell';
 
-export async function syncBucketContents( localPath: string, bucketName: string, profile: string , region: string) {
+export async function syncBucketContents(localPath: string, bucketName: string, profile: string, region: string, isFolder: boolean) {
     try {
-        console.log('region', region);
+
         // Si la región es 'us-east-1', se usa el valor predeterminado
         if (region === null) {
             region = 'us-east-1';
         }
 
-        console.log('region 2', region);
+        let syncCommand = ''
 
-        const command = new Command('aws-cli', ["s3", "sync", `s3://${bucketName}` , localPath,  "--region", region, "--profile", profile]);
-        
+        if (isFolder) {
+            syncCommand = 'sync'
+        } else {
+            syncCommand = 'cp'
+        }
+
+
+        const command = new Command('aws-cli', ["s3", syncCommand, `s3://${bucketName}`, localPath, "--region", region, "--profile", profile]);
+
         console.log('command', command);
         let errorOutput = '';
 
@@ -32,7 +39,7 @@ export async function syncBucketContents( localPath: string, bucketName: string,
         console.log('child', child);
 
         const str = child.stdout.toString();
-        
+
 
         return str;
     } catch (error) {

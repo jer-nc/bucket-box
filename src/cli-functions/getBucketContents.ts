@@ -30,14 +30,13 @@ export async function getBucketContents(bucket: string, profile: string, region:
         const str = child.stdout.toString();
         // Dividir las líneas de texto en un array
         const lines = str.trim().split('\n');
+        // Aplicar la transformación a cada línea antes de procesarla
+        const processedLines = lines.map(line => line.trim().split(/\s+/));
 
         // Filtrar y mapear las líneas para crear objetos JSON según tu lógica
-        const contents = lines.map((line: string) => {
-            const elements = line.trim().split(/\s+(?=\S+$)/).map(line => line.replace(/\\/g, '/'));
+        const contents = processedLines.map((elements: string[]) => {
 
-            console.log('elements', elements)
-            // const elements = line.trim().split(/\s+(?=\S+$)/);
-            if (elements.length === 2 && elements[0] === 'PRE' ) {
+            if (elements.length === 2 && elements[0] === 'PRE') {
                 // Es un directorio
                 return {
                     type: 'folder',
@@ -70,14 +69,6 @@ export async function getBucketContents(bucket: string, profile: string, region:
         }).filter(Boolean);
 
         console.log('contents', contents)
-
-        // console.log('str', str);
-        // const strParse = JSON.parse(str);
-
-        // console.log('strParse', strParse);
-        // if (!str.length) {
-        //     throw new Error('No buckets found');
-        // }
 
         return contents;
 

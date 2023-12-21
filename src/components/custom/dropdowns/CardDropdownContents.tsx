@@ -1,21 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Bucket } from "@/features/list-buckets/ListBuckets";
 import { MoreVertical, PanelTop, Trash2 } from "lucide-react";
 import { open } from '@tauri-apps/api/shell';
 import { getBucketRegion } from "@/cli-functions/getBucketRegion";
 import { useUserSessionStore } from "@/store/useSessionStore";
-import SyncBucketDialog from "../dialogs/SyncBucketDialog";
-import BucketDetailSheet from "../sheets/BucketDetailSheet";
+import { File } from "@/features/list-bucket-contents/ListBucketContents";
+import ObjectDetailSheet from "../sheets/ObjectDetailSheet";
+import SyncBucketObjectsDialog from "../dialogs/SyncBucketObjectsDialog";
 
 export interface CardDropdownProps {
-    bucket: Bucket;
+    file: File;
 }
 
-const CardDropdown = ({ bucket }: CardDropdownProps) => {
+const CardDropdownContents = ({ file }: CardDropdownProps) => {
     const { currentProfile } = useUserSessionStore();
 
-    // console.log('bucket', bucket)
+    console.log('file', file)
     return (
         <>
             <DropdownMenu>
@@ -37,7 +37,7 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                             e.stopPropagation();
                         }}
                     >
-                        {bucket.Name}
+                        {file.name}
                     </div>
 
                     <DropdownMenuSeparator />
@@ -49,7 +49,7 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                             console.log('click')
                         }}
                     >
-                        <BucketDetailSheet bucket={bucket} />
+                        <ObjectDetailSheet file={file} />
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         onClick={(e) => {
@@ -57,18 +57,18 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                             e.preventDefault();
                         }}
                     >
-                        <SyncBucketDialog bucket={bucket} />
+                        <SyncBucketObjectsDialog file={file} />
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                         onClick={async (e) => {
                             e.stopPropagation();
-                            let bucketRegion = await getBucketRegion(bucket.Name, currentProfile);
+                            let bucketRegion = await getBucketRegion(file.name, currentProfile);
                             console.log('bucketRegion', bucketRegion)
                             if (bucketRegion === null) {
                                 bucketRegion = 'us-east-1';
                             }
-                            open("https://console.aws.amazon.com/s3/buckets/" + `${bucket.Name}` + "/?region=" + `${bucketRegion}` + "&tab=overview")
+                            open("https://console.aws.amazon.com/s3/buckets/" + `${file.name}` + "/?region=" + `${bucketRegion}` + "&tab=overview")
                         }}
                     >
                         <PanelTop size={16} className="mr-2" />
@@ -78,12 +78,12 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                         className="text-destructive"
                         onClick={async (e) => {
                             e.stopPropagation();
-                            let bucketRegion = await getBucketRegion(bucket.Name, currentProfile);
+                            let bucketRegion = await getBucketRegion(file.name, currentProfile);
                             console.log('bucketRegion', bucketRegion)
                             if (bucketRegion === null) {
                                 bucketRegion = 'us-east-1';
                             }
-                            open("https://console.aws.amazon.com/s3/bucket/" + `${bucket.Name}` + "/delete?region=" + `${bucketRegion}`)
+                            open("https://console.aws.amazon.com/s3/bucket/" + `${file.name}` + "/delete?region=" + `${bucketRegion}`)
                         }}
                     >
                         <Trash2 size={16} className="mr-2" />
@@ -95,4 +95,4 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
     )
 }
 
-export default CardDropdown
+export default CardDropdownContents

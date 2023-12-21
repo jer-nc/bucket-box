@@ -25,6 +25,11 @@ const Sidebar = () => {
       path: '/create-bucket',
       icon: <Plus size={18} />
     },
+    // {
+    //   name: 'Create Bucket',
+    //   path: '/buckets/test/test2/test.txt',
+    //   icon: <Plus size={18} />
+    // },
     {
       name: 'Settings',
       path: '/settings',

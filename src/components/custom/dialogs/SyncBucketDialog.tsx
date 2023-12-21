@@ -36,7 +36,7 @@ const SyncBucketDialog = ({ bucket }: CardDropdownProps) => {
 
         try {
             const region = await getBucketRegion(bucket.Name, currentProfile);
-            const response = await syncBucketContents(selectedPath!, bucket.Name, currentProfile, region);
+            const response = await syncBucketContents(selectedPath!, bucket.Name, currentProfile, region, true);
             if (response && response?.length > 0) {
                 toast({
                     title: 'Success',
