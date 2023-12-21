@@ -95,9 +95,9 @@ const ListBucketContents = () => {
                 <div className='flex items-center gap-4'>
                   {
                     file.type === 'folder' ? (
-                      <Folder fill='currentColor' size={24} />
+                      <Folder fill='currentColor' size={16} />
                     ) : (
-                      <FileIcon size={24} />
+                      <FileIcon size={16} />
                     )
                   }
                   <p className='text-sm truncate max-w-[10rem]'>{file.name}</p>

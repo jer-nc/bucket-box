@@ -2,8 +2,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Eye } from "lucide-react"
 import SheetSkeleton from "../skeletons/SheetSkeleton"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { File } from "@/features/list-bucket-contents/ListBucketContents"
 import { useState } from "react"
+import { File } from "@/lib/app"
 
 
 interface ObjectDetail {

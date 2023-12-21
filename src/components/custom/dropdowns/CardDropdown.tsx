@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Bucket } from "@/features/list-buckets/ListBuckets";
 import { MoreVertical, PanelTop, Trash2 } from "lucide-react";
 import { open } from '@tauri-apps/api/shell';
 import { getBucketRegion } from "@/cli-functions/getBucketRegion";
 import { useUserSessionStore } from "@/store/useSessionStore";
 import SyncBucketDialog from "../dialogs/SyncBucketDialog";
 import BucketDetailSheet from "../sheets/BucketDetailSheet";
+import { Bucket } from "@/lib/app";
 
 export interface CardDropdownProps {
     bucket: Bucket;

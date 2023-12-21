@@ -4,9 +4,9 @@ import { MoreVertical, PanelTop, Trash2 } from "lucide-react";
 import { open } from '@tauri-apps/api/shell';
 import { getBucketRegion } from "@/cli-functions/getBucketRegion";
 import { useUserSessionStore } from "@/store/useSessionStore";
-import { File } from "@/features/list-bucket-contents/ListBucketContents";
 import ObjectDetailSheet from "../sheets/ObjectDetailSheet";
 import SyncBucketObjectsDialog from "../dialogs/SyncBucketObjectsDialog";
+import { File } from "@/lib/app";
 
 export interface CardDropdownProps {
     file: File;

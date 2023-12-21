@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from '@/components/ui/use-toast';
 import { useUserSessionStore } from '@/store/useSessionStore';
-import { getBucketContents } from '@/cli-functions/getBucketContents';
-import { getBucketRegion } from '@/cli-functions/getBucketRegion';
+import { getBucketRegion, getBucketContents } from '@/cli-functions';
 import CardDropdownContents from '@/components/custom/dropdowns/CardDropdownContents';
 import Spinner from '@/components/custom/loaders/Spinner';
 import { Card } from '@/components/ui/card';
 import { File as FileIcon, Folder } from 'lucide-react';
 import { File } from '@/lib/app';
+import { extractBucketAndFolder } from '@/lib/utils';
 
 
 const ListBucketSubfolderContents = () => {
@@ -18,11 +18,8 @@ const ListBucketSubfolderContents = () => {
     const [bucketContents, setBucketContents] = useState<File[]>([]);
     const navigate = useNavigate();
 
-    const pathSegments = currentPathname.split('/');
-    const bucketName = pathSegments[2];
-    const folderIndex = pathSegments.indexOf('buckets') + 2;
-    const folderSegments = pathSegments.slice(folderIndex);
-    const folderPath = folderSegments.join('/');
+    const { bucketName, folderPath } = extractBucketAndFolder(currentPathname);
+
 
     const handleGetBucketContents = async () => {
         try {
@@ -58,6 +55,15 @@ const ListBucketSubfolderContents = () => {
         navigate(newPathname);
     };
 
+    const handleCardClick = (file: File) => {
+        if (file.type === 'folder') {
+            handleNavigate(file.name);
+        } else {
+            return;
+        }
+    };
+
+
     useEffect(() => {
         if (profiles.length > 0 && currentPathname !== '/') {
             handleGetBucketContents();
@@ -79,13 +85,14 @@ const ListBucketSubfolderContents = () => {
                     <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4'>
 
                         {bucketContents.map((file: File, index: number) => (
-                            <Card onClick={() => handleNavigate(file.name)} title={file.name} key={index} className='p-4 flex items-center justify-between gap-4 hover:bg-secondary/30 rounded-md cursor-pointer'>
+                            <Card onClick={() => handleCardClick(file)} title={file.name} key={index}
+                                className={`p-4 flex items-center justify-between gap-4 hover:bg-secondary/30 rounded-md ${file.type !== 'folder' ? 'cursor-default' : 'cursor-pointer'}`}>
                                 <div className='flex items-center gap-4'>
                                     {
                                         file.type === 'folder' ? (
-                                            <Folder fill='currentColor' size={24} />
+                                            <Folder fill='currentColor' size={16} />
                                         ) : (
-                                            <FileIcon fill='currentColor' size={24} />
+                                            <FileIcon size={16} />
                                         )
                                     }
                                     <p className='text-sm truncate max-w-[10rem]'>{file.name}</p>

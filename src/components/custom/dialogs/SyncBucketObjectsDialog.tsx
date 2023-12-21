@@ -8,8 +8,8 @@ import { useUserSessionStore } from "@/store/useSessionStore";
 import { getBucketRegion } from "@/cli-functions/getBucketRegion";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/components/ui/use-toast";
-import { File } from "@/features/list-bucket-contents/ListBucketContents";
 import { useLocation } from "react-router-dom";
+import { File } from "@/lib/app";
 
 interface SyncBucketDialogProps {
   file: File;
