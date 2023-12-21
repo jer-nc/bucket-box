@@ -8,9 +8,10 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
-      {/* <Route path="buckets/*" element={<FolderPage />} /> */}
-      <Route path="/buckets/:bucketId" element={<BucketContentsLayout> <FolderPage /> </BucketContentsLayout>} />
-      <Route path="/buckets/:bucketId/*" element={<BucketContentsLayout> <SubFolderPage /> </BucketContentsLayout>} />
+      <Route path="/buckets/:bucketId" element={<BucketContentsLayout />}>
+        <Route index element={<FolderPage />} />
+        <Route path="*" element={<SubFolderPage />} />
+      </Route>
     </Routes>
   );
 }

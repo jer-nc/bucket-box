@@ -1,16 +1,13 @@
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, RefreshCcw } from 'lucide-react';
-import React from 'react'
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useOutlet } from 'react-router-dom';
 
-type Props = {
-    children: React.ReactNode;
-}
 
-const BucketContentsLayout = ({ children }: Props) => {
+
+const BucketContentsLayout = () => {
+    const outlet = useOutlet();
     const { pathname: currentPathname } = useLocation()
     const navigate = useNavigate();
-
     console.log('currentPathname', currentPathname)
 
     const handleNavigate = () => {
@@ -42,7 +39,7 @@ const BucketContentsLayout = ({ children }: Props) => {
                     <RefreshCcw size={18} />
                 </Button>
             </div>
-            {children}
+            {outlet}
         </div>
     )
 }
