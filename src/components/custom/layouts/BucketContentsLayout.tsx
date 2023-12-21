@@ -15,7 +15,7 @@ const BucketContentsLayout = ({ children }: Props) => {
 
     const handleNavigate = () => {
         const segments = currentPathname.split('/');
-        if (segments[segments.length - 2] === 'buckets') {
+        if (segments[segments.length - 2] === 'buckets' ) {
             navigate('/');
         } else {
             const newPath = segments.slice(0, -1).join('/');

@@ -9,11 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import CardDropdown from '@/components/custom/dropdowns/CardDropdown';
 import bucketIcon from '@/assets/icons/bucket-icon.svg';
+import { Bucket } from '@/lib/app';
 
-export interface Bucket {
-    Name: string;
-    CreationDate?: string;
-}
 
 function ListBuckets() {
     const { toast } = useToast();
@@ -51,7 +48,7 @@ function ListBuckets() {
 
     useEffect(() => {
         if (profiles.length > 0) {
-            handleListBuckets(); // Ejecutar al montar el componente si hay perfiles
+            handleListBuckets(); 
         }
     }, [profiles, currentProfile]);
 
@@ -63,7 +60,6 @@ function ListBuckets() {
                     <RefreshCcw size={18} />
                 </Button>
             </div>
-            {/* <Separator className='my-2' />  */}
             <div className={`py-4 ${loading || profiles.length === 0 || buckets.length === 0 ? 'flex flex-col justify-center' : 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4'}`}>
                 {loading ? (
                     <div style={{ height: 'calc(100vh - 14.5rem)' }} className='flex items-center justify-center py-8'>
@@ -75,9 +71,6 @@ function ListBuckets() {
                     </div>
                 ) : buckets.length === 0 && !loading ? (
                     <div style={{ height: 'calc(100vh - 14.5rem)' }} className='mx-auto text-center flex flex-col justify-center'>
-                        {/* <Folder fill='currentColor' className='mx-auto' size={24} />
-                         */}
-
                         <p className='text-sm truncate mx-auto max-w-[10rem] text-muted-foreground'>No buckets available</p>
                         <Button className='mt-4'>
                             Create Bucket

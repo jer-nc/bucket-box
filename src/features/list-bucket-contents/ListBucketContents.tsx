@@ -1,21 +1,14 @@
-import { getBucketContents } from '@/cli-functions/getBucketContents'
-import { getBucketRegion } from '@/cli-functions/getBucketRegion'
+import { getBucketContents, getBucketRegion } from '@/cli-functions';
 import CardDropdownContents from '@/components/custom/dropdowns/CardDropdownContents'
 import Spinner from '@/components/custom/loaders/Spinner'
 import { Card } from '@/components/ui/card'
 import { toast } from '@/components/ui/use-toast'
+import { File } from '@/lib/app'
 import { useUserSessionStore } from '@/store/useSessionStore'
-import { File, Folder } from 'lucide-react'
+import { File as FileIcon, Folder } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-
-export interface File {
-  name: string;
-  lastModified?: string;
-  size?: number;
-  type: string;
-}
 
 const ListBucketContents = () => {
   const { pathname: currentPathname } = useLocation()
@@ -58,22 +51,28 @@ const ListBucketContents = () => {
     }
   }
 
-  console.log('bucketContents', bucketContents)
+  // console.log('bucketContents', bucketContents)
 
   useEffect(() => {
     if (profiles.length > 0 && currentPathname !== '/') {
-      // getBucketContents(currentPathname, '', currentProfile)
-      handleGetBucketContents(); // Ejecutar al montar el componente si hay perfiles
+      handleGetBucketContents();
     }
   }, [profiles, currentProfile, currentPathname]);
 
   const handleNavigate = (prefix: string) => {
-    // navigate(`/buckets/${bucket}`);
     console.log('prefix', prefix)
     const folderName = currentPathname.replace('/buckets/', '');
     const newPathname = `/buckets/${folderName}/${prefix}`
     console.log('newPathname', newPathname)
     navigate(newPathname);
+  };
+
+  const handleCardClick = (file: File) => {
+    if (file.type === 'folder') {
+      handleNavigate(file.name);
+    } else {
+      return;
+    }
   };
 
   return (
@@ -89,15 +88,16 @@ const ListBucketContents = () => {
           </div>
         ) : (
           <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4'>
-
             {bucketContents.map((file: File, index: number) => (
-              <Card onClick={() => handleNavigate(file.name)} title={file.name} key={index} className='p-4 flex items-center justify-between gap-4 hover:bg-secondary/30 rounded-md cursor-pointer'>
+              <Card onClick={() => handleCardClick(file)}
+                title={file.name} key={index}
+                className={`p-4 flex items-center justify-between gap-4 hover:bg-secondary/30 rounded-md ${file.type !== 'folder' ? 'cursor-default' : 'cursor-pointer'}`}>
                 <div className='flex items-center gap-4'>
                   {
                     file.type === 'folder' ? (
                       <Folder fill='currentColor' size={24} />
                     ) : (
-                      <File fill='currentColor' size={24} />
+                      <FileIcon size={24} />
                     )
                   }
                   <p className='text-sm truncate max-w-[10rem]'>{file.name}</p>
@@ -106,9 +106,7 @@ const ListBucketContents = () => {
               </Card>
             ))}
           </div>
-
         )}
-
       </div>
     </div>
   )
