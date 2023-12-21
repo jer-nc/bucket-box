@@ -1,10 +1,9 @@
-import { AWS_CLI_COMMANDS } from "@/lib/aws-commands";
 import { Command } from "@tauri-apps/api/shell";
 
 
 export async function getAllProfiles() {
     try {
-        const command = new Command('aws-cli', AWS_CLI_COMMANDS('').AWS_LIST_PROFILES);
+        const command = new Command('aws-cli', ["configure", "list-profiles", "--output", "json"]);
         console.log('command', command)
         command.on('close', data => {
             console.log(`command finished with code ${data.code} and signal ${data.signal}`);

@@ -1,9 +1,8 @@
 import { Command } from '@tauri-apps/api/shell';
-import { AWS_CLI_COMMANDS } from '@/lib/aws-commands';
 
 export async function listAllBuckets(profile: string) {
     try {
-        const command = new Command('aws-cli', AWS_CLI_COMMANDS(profile).S3_LIST_BUCKETS_BY_NAME);
+        const command = new Command('aws-cli', ["s3api", "list-buckets", "--output", "json", "--profile", profile]);
 
         let errorOutput = '';
 
