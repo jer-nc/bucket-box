@@ -9,13 +9,20 @@ type Props = {
 
 const BucketContentsLayout = ({ children }: Props) => {
     const { pathname: currentPathname } = useLocation()
+    const navigate = useNavigate();
 
     console.log('currentPathname', currentPathname)
 
-    const navigate = useNavigate();
     const handleNavigate = () => {
-        navigate('/');
+        const segments = currentPathname.split('/');
+        if (segments[segments.length - 2] === 'buckets') {
+            navigate('/');
+        } else {
+            const newPath = segments.slice(0, -1).join('/');
+            navigate(newPath);
+        }
     }
+    
 
     const currentPathnameWithoutBuckets = currentPathname.replace('/buckets/', '');
 

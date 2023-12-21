@@ -19,7 +19,7 @@ function ListBuckets() {
     const { toast } = useToast();
     const [buckets, setBuckets] = useState<Bucket[]>([]);
     const { profiles, currentProfile } = useUserSessionStore();
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     const handleListBuckets = async () => {

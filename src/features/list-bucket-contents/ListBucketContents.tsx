@@ -7,7 +7,7 @@ import { toast } from '@/components/ui/use-toast'
 import { useUserSessionStore } from '@/store/useSessionStore'
 import { File, Folder } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 
 export interface File {
@@ -20,9 +20,9 @@ export interface File {
 const ListBucketContents = () => {
   const { pathname: currentPathname } = useLocation()
   const { profiles, currentProfile } = useUserSessionStore();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [bucketContents, setBucketContents] = useState<File[]>([]);
-
+  const navigate = useNavigate();
 
 
   console.log('currentPathname', currentPathname)
@@ -65,7 +65,16 @@ const ListBucketContents = () => {
       // getBucketContents(currentPathname, '', currentProfile)
       handleGetBucketContents(); // Ejecutar al montar el componente si hay perfiles
     }
-  }, [profiles, currentProfile]);
+  }, [profiles, currentProfile, currentPathname]);
+
+  const handleNavigate = (prefix: string) => {
+    // navigate(`/buckets/${bucket}`);
+    console.log('prefix', prefix)
+    const folderName = currentPathname.replace('/buckets/', '');
+    const newPathname = `/buckets/${folderName}/${prefix}`
+    console.log('newPathname', newPathname)
+    navigate(newPathname);
+  };
 
   return (
     <div className='relative'>
@@ -82,13 +91,13 @@ const ListBucketContents = () => {
           <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4'>
 
             {bucketContents.map((file: File, index: number) => (
-              <Card title={file.name} key={index} className='p-4 flex items-center justify-between gap-4 hover:bg-secondary/30 rounded-md cursor-pointer'>
+              <Card onClick={() => handleNavigate(file.name)} title={file.name} key={index} className='p-4 flex items-center justify-between gap-4 hover:bg-secondary/30 rounded-md cursor-pointer'>
                 <div className='flex items-center gap-4'>
                   {
                     file.type === 'folder' ? (
-                      <Folder fill='currentColor' width={24} height={24} size={24} />
+                      <Folder fill='currentColor' size={24} />
                     ) : (
-                      <File fill='currentColor' width={24} height={24} size={24} />
+                      <File fill='currentColor' size={24} />
                     )
                   }
                   <p className='text-sm truncate max-w-[10rem]'>{file.name}</p>
