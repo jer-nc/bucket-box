@@ -7,6 +7,8 @@ import { useUserSessionStore } from "@/store/useSessionStore";
 import ObjectDetailSheet from "../sheets/ObjectDetailSheet";
 import SyncBucketObjectsDialog from "../dialogs/SyncBucketObjectsDialog";
 import { File } from "@/lib/app";
+import { extractBucketAndFolder } from "@/lib/utils";
+import { useLocation } from "react-router-dom";
 
 export interface CardDropdownProps {
     file: File;
@@ -14,8 +16,14 @@ export interface CardDropdownProps {
 
 const CardDropdownContents = ({ file }: CardDropdownProps) => {
     const { currentProfile } = useUserSessionStore();
+    const { pathname: currentPathname } = useLocation();
 
-    console.log('file', file)
+    console.log('file t', file)
+    const { bucketName, folderPath } = extractBucketAndFolder(currentPathname);
+
+    console.log('bucketName', bucketName)
+    console.log('folderPath', folderPath)
+
     return (
         <>
             <DropdownMenu>
@@ -63,12 +71,24 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
                     <DropdownMenuItem
                         onClick={async (e) => {
                             e.stopPropagation();
-                            let bucketRegion = await getBucketRegion(file.name, currentProfile);
+                            let bucketRegion = await getBucketRegion(bucketName, currentProfile);
                             console.log('bucketRegion', bucketRegion)
                             if (bucketRegion === null) {
                                 bucketRegion = 'us-east-1';
                             }
-                            open("https://console.aws.amazon.com/s3/buckets/" + `${file.name}` + "/?region=" + `${bucketRegion}` + "&tab=overview")
+                            if (file.type === 'folder') {
+                                if (folderPath !== '') {
+                                    open("https://console.aws.amazon.com/s3/buckets/" + `${bucketName}` + "/?region=" + `${bucketRegion}` + `&prefix=${folderPath}/${file.name}/`)
+                                } else {
+                                    open("https://console.aws.amazon.com/s3/buckets/" + `${bucketName}` + "/?region=" + `${bucketRegion}` + `&prefix=${file.name}/`)
+                                }
+                            } else {
+                                if (folderPath !== '') {
+                                    open("https://console.aws.amazon.com/s3/buckets/" + `${bucketName}` + "/?region=" + `${bucketRegion}` + `&prefix=${folderPath}/${file.name}`)
+                                } else {
+                                    open("https://console.aws.amazon.com/s3/buckets/" + `${bucketName}` + "/?region=" + `${bucketRegion}` + `&prefix=${file.name}`)
+                                }
+                            }
                         }}
                     >
                         <PanelTop size={16} className="mr-2" />

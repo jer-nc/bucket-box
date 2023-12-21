@@ -1,23 +1,26 @@
 import { Button } from '@/components/ui/button';
-import {  Plus, RefreshCcw } from 'lucide-react';
+import { Plus, RefreshCcw } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
-import { listAllBuckets } from '@/cli-functions/listAllBuckets';
+import { listAllBuckets } from '@/cli-functions';
 import { useUserSessionStore } from '@/store/useSessionStore';
 import Spinner from '@/components/custom/loaders/Spinner';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import CardDropdown from '@/components/custom/dropdowns/CardDropdown';
 import bucketIcon from '@/assets/icons/bucket-icon.svg';
-import { Bucket } from '@/lib/app';
+import { useBucketStore } from '@/store/useBucketStore';
 
 
 function ListBuckets() {
     const { toast } = useToast();
-    const [buckets, setBuckets] = useState<Bucket[]>([]);
+    const buckets = useBucketStore((state) => state.buckets);
+    const setBuckets = useBucketStore((state) => state.setBuckets);
     const { profiles, currentProfile } = useUserSessionStore();
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const [forceRefresh, setForceRefresh] = useState(false);
+ 
 
     const handleListBuckets = async () => {
         try {
@@ -47,15 +50,21 @@ function ListBuckets() {
     };
 
     useEffect(() => {
-        if (profiles.length > 0) {
-            handleListBuckets(); 
+        if (profiles.length > 0 && forceRefresh) {
+            handleListBuckets();
         }
-    }, [profiles, currentProfile]);
+    }, [currentProfile, profiles]);
+
+    useEffect(() => {
+        setForceRefresh(true)
+    }, [currentProfile])
+
 
     return (
         <div className='relative'>
             <div className='top-14 sticky w-full z-50  flex justify-between items-center bg-background py-4'>
                 <p className='font-semibold'>S3 Buckets</p>
+
                 <Button size='icon' variant='ghost' onClick={handleListBuckets}>
                     <RefreshCcw size={18} />
                 </Button>
@@ -81,7 +90,6 @@ function ListBuckets() {
                     buckets.map((bucket, index) => (
                         <Card onClick={() => handleNavigate(bucket.Name)} title={bucket.Name} key={index} className='p-4 flex items-center justify-between gap-4 hover:bg-secondary/30 rounded-md cursor-pointer'>
                             <div className='flex items-center gap-4'>
-                                {/* <Folder fill='currentColor' size={16} /> */}
                                 <img src={bucketIcon} alt='bucket icon' className='w-5 h-5' />
                                 <p className='text-start text-sm truncate max-w-[10rem]'>{bucket.Name}</p>
                             </div>

@@ -71,7 +71,7 @@ const BucketDetailSheet = ({ bucket }: CardDropdownProps) => {
                             loading ? (
                                 <SheetSkeleton />
                             ) : (
-                                <ScrollArea className="h-[90vh] ">
+                                <ScrollArea className="h-[80vh] ">
                                     <div className="py-6 pr-4">
                                         <p className="text-sm font-semibold">
                                             Region:

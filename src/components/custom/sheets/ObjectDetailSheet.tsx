@@ -2,8 +2,9 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Eye } from "lucide-react"
 import SheetSkeleton from "../skeletons/SheetSkeleton"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { File } from "@/lib/app"
+import { toast } from "@/components/ui/use-toast"
 
 
 interface ObjectDetail {
@@ -13,6 +14,29 @@ interface ObjectDetail {
 const ObjectDetailSheet = ({ file }: ObjectDetail) => {
 
     const [loading, setLoading] = useState(false);
+
+    const handleGetObject = async () => {
+        try {
+            setLoading(true);
+        } catch (error) {
+            setLoading(false);
+            console.error(error);
+            if (error instanceof Error) {
+                toast({
+                    title: 'Error',
+                    description: error.message,
+                    variant: 'destructive',
+                    className: 'text-xs',
+                });
+            }
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        handleGetObject();
+    }, []);
 
     return (
         <>
@@ -54,7 +78,7 @@ const ObjectDetailSheet = ({ file }: ObjectDetail) => {
                             loading ? (
                                 <SheetSkeleton />
                             ) : (
-                                <ScrollArea className="h-[90vh] ">
+                                <ScrollArea className="h-[80vh] ">
                                     {/* <div className="py-6 pr-4">
                                         <p className="text-sm font-semibold">
                                             Region:
