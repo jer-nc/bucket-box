@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { MoreVertical, PanelTop, Trash2 } from "lucide-react";
+import { MoreVertical, PanelTop } from "lucide-react";
 import { open } from '@tauri-apps/api/shell';
 import { getBucketRegion } from "@/cli-functions/getBucketRegion";
 import { useUserSessionStore } from "@/store/useSessionStore";
@@ -76,17 +76,20 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
                             if (bucketRegion === null) {
                                 bucketRegion = 'us-east-1';
                             }
+                            // replace backslashes with %5C for the url
+                            const slashFilename =  file.name.replace(/\\/g, '%5C');
+
                             if (file.type === 'folder') {
                                 if (folderPath !== '') {
-                                    open("https://console.aws.amazon.com/s3/buckets/" + `${bucketName}` + "/?region=" + `${bucketRegion}` + `&prefix=${folderPath}/${file.name}/`)
+                                    open("https://console.aws.amazon.com/s3/buckets/" + `${bucketName}` + "/?region=" + `${bucketRegion}` + `&prefix=${folderPath}/${slashFilename}/`)
                                 } else {
-                                    open("https://console.aws.amazon.com/s3/buckets/" + `${bucketName}` + "/?region=" + `${bucketRegion}` + `&prefix=${file.name}/`)
+                                    open("https://console.aws.amazon.com/s3/buckets/" + `${bucketName}` + "/?region=" + `${bucketRegion}` + `&prefix=${slashFilename}/`)
                                 }
                             } else {
                                 if (folderPath !== '') {
-                                    open("https://console.aws.amazon.com/s3/buckets/" + `${bucketName}` + "/?region=" + `${bucketRegion}` + `&prefix=${folderPath}/${file.name}`)
+                                    open("https://console.aws.amazon.com/s3/buckets/" + `${bucketName}` + "/?region=" + `${bucketRegion}` + `&prefix=${folderPath}/${slashFilename}`)
                                 } else {
-                                    open("https://console.aws.amazon.com/s3/buckets/" + `${bucketName}` + "/?region=" + `${bucketRegion}` + `&prefix=${file.name}`)
+                                    open("https://console.aws.amazon.com/s3/buckets/" + `${bucketName}` + "/?region=" + `${bucketRegion}` + `&prefix=${slashFilename}`)
                                 }
                             }
                         }}
@@ -94,21 +97,7 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
                         <PanelTop size={16} className="mr-2" />
                         Open in AWS Console
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                        className="text-destructive"
-                        onClick={async (e) => {
-                            e.stopPropagation();
-                            let bucketRegion = await getBucketRegion(file.name, currentProfile);
-                            console.log('bucketRegion', bucketRegion)
-                            if (bucketRegion === null) {
-                                bucketRegion = 'us-east-1';
-                            }
-                            open("https://console.aws.amazon.com/s3/bucket/" + `${file.name}` + "/delete?region=" + `${bucketRegion}`)
-                        }}
-                    >
-                        <Trash2 size={16} className="mr-2" />
-                        Delete in AWS Console
-                    </DropdownMenuItem>
+                   
                 </DropdownMenuContent>
             </DropdownMenu>
         </>
