@@ -40,7 +40,7 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start">
-                    <div className="text-xs p-2 font-semibold flex items-center "
+                    <div className="text-xs p-2 font-semibold flex items-center"
                         onClick={(e) => {
                             e.stopPropagation();
                         }}

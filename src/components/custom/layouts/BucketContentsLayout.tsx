@@ -12,14 +12,14 @@ const BucketContentsLayout = () => {
 
     const handleNavigate = () => {
         const segments = currentPathname.split('/');
-        if (segments[segments.length - 2] === 'buckets' ) {
+        if (segments[segments.length - 2] === 'buckets') {
             navigate('/');
         } else {
             const newPath = segments.slice(0, -1).join('/');
             navigate(newPath);
         }
     }
-    
+
 
     const currentPathnameWithoutBuckets = currentPathname.replace('/buckets/', '');
 
@@ -27,11 +27,10 @@ const BucketContentsLayout = () => {
         <div>
             <div className='top-14 sticky w-full z-50  flex justify-between items-center bg-background py-4'>
                 <div className='flex items-center gap-2'>
-                    <Button onClick={handleNavigate} size='icon' variant='ghost' >
+                    <Button onClick={handleNavigate} size='icon' variant='ghost' className='text-muted-foreground' >
                         <ChevronLeft size={18} />
                     </Button>
-                    <p className='font-semibold'>
-                        {/* {currentPathname.split('/').pop()}{' '} */}
+                    <p className='text-muted-foreground text-sm'>
                         {currentPathnameWithoutBuckets}
                     </p>
                 </div>

@@ -1,63 +1,16 @@
-import { getBucketContents, getBucketRegion } from '@/cli-functions';
 import CardDropdownContents from '@/components/custom/dropdowns/CardDropdownContents'
 import Spinner from '@/components/custom/loaders/Spinner'
 import { Card } from '@/components/ui/card'
-import { toast } from '@/components/ui/use-toast'
+import useBucketContents from '@/hooks/useBucketContents';
 import { File } from '@/lib/app'
-import { useUserSessionStore } from '@/store/useSessionStore'
 import { File as FileIcon, Folder } from 'lucide-react'
-import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 
 const ListBucketContents = () => {
-  const { pathname: currentPathname } = useLocation()
-  const { profiles, currentProfile } = useUserSessionStore();
-  const [loading, setLoading] = useState(true);
-  const [bucketContents, setBucketContents] = useState<File[]>([]);
+  const { loading, bucketContents } = useBucketContents();
+  const { pathname: currentPathname } = useLocation();
   const navigate = useNavigate();
-
-
-  console.log('currentPathname', currentPathname)
-
-  const handleGetBucketContents = async () => {
-    try {
-      setLoading(true);
-      const profile = localStorage.getItem('aws-profile') || '';
-      const folderName = currentPathname.replace('/buckets/', '');
-      const bucketLocation = await getBucketRegion(folderName, profile);
-
-      console.log('bucketLocation', bucketLocation)
-      const response = await getBucketContents(folderName, profile, bucketLocation);
-      console.log('bucketContents', response)
-      if (response) {
-        setBucketContents(response as File[]);
-      } else {
-        setBucketContents([]);
-      }
-    } catch (error) {
-      console.error(error);
-      setBucketContents([]);
-      if (error instanceof Error) {
-        toast({
-          title: 'Error',
-          description: error.message,
-          variant: 'destructive',
-          className: 'text-xs',
-        });
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  // console.log('bucketContents', bucketContents)
-
-  useEffect(() => {
-    if (profiles.length > 0 && currentPathname !== '/') {
-      handleGetBucketContents();
-    }
-  }, [profiles, currentProfile, currentPathname]);
 
   const handleNavigate = (prefix: string) => {
     console.log('prefix', prefix)
