@@ -2,15 +2,13 @@ import { Command } from '@tauri-apps/api/shell';
 
 export async function getBucketContents(bucket: string, profile: string, region: string,prefix?: string) {
     try {
-
-        console.log('region', region);
         // Si la región es 'us-east-1', se usa el valor predeterminado
         if (region === null) {
             region = 'us-east-1';
         }
 
-        console.log('region 2', region);
         let bucketPath = 's3://' + bucket;
+        
         if (prefix) {
             bucketPath += '/' + prefix + '/';
         }
@@ -72,7 +70,7 @@ export async function getBucketContents(bucket: string, profile: string, region:
             }
         }).filter(Boolean);
 
-        console.log('contents', contents)
+        // console.log('contents', contents)
 
         return contents;
 

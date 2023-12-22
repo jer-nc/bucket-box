@@ -1,8 +1,11 @@
 import CardDropdownContents from '@/components/custom/dropdowns/CardDropdownContents'
+import iconMap from '@/components/custom/icons/iconMap';
 import Spinner from '@/components/custom/loaders/Spinner'
 import { Card } from '@/components/ui/card'
 import useBucketContents from '@/hooks/useBucketContents';
 import { File } from '@/lib/app'
+import { getFileExtension } from '@/lib/utils';
+import { useBucketStore } from '@/store/useBucketStore';
 import { File as FileIcon, Folder } from 'lucide-react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
@@ -11,6 +14,9 @@ const ListBucketContents = () => {
   const { loading, bucketContents } = useBucketContents();
   const { pathname: currentPathname } = useLocation();
   const navigate = useNavigate();
+  const { currentBucketRegion } = useBucketStore();
+
+  console.log('bucketRegion', currentBucketRegion)
 
   const handleNavigate = (prefix: string) => {
     console.log('prefix', prefix)
@@ -27,6 +33,13 @@ const ListBucketContents = () => {
       return;
     }
   };
+
+
+  const getFileIcon = (fileName: string) => {
+    const extension = getFileExtension(fileName);
+    return iconMap[extension] || <FileIcon size={16} />;
+  };
+
 
   return (
     <div className='relative'>
@@ -50,7 +63,7 @@ const ListBucketContents = () => {
                     file.type === 'folder' ? (
                       <Folder fill='currentColor' size={16} />
                     ) : (
-                      <FileIcon size={16} />
+                      getFileIcon(file.name)
                     )
                   }
                   <p className='text-sm truncate max-w-[10rem]'>{file.name}</p>

@@ -18,11 +18,11 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
     const { currentProfile } = useUserSessionStore();
     const { pathname: currentPathname } = useLocation();
 
-    console.log('file t', file)
+    // console.log('file t', file)
     const { bucketName, folderPath } = extractBucketAndFolder(currentPathname);
 
-    console.log('bucketName', bucketName)
-    console.log('folderPath', folderPath)
+    // console.log('bucketName', bucketName)
+    // console.log('folderPath', folderPath)
 
     return (
         <>
@@ -49,16 +49,19 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
                     </div>
 
                     <DropdownMenuSeparator />
-
-                    <DropdownMenuItem
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            e.preventDefault();
-                            console.log('click')
-                        }}
-                    >
-                        <ObjectDetailSheet file={file} />
-                    </DropdownMenuItem>
+                    {
+                        file.type === 'file' && (
+                            <DropdownMenuItem
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    console.log('click')
+                                }}
+                            >
+                                <ObjectDetailSheet file={file} />
+                            </DropdownMenuItem>
+                        )
+                    }
                     <DropdownMenuItem
                         onClick={(e) => {
                             e.stopPropagation();
@@ -77,7 +80,7 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
                                 bucketRegion = 'us-east-1';
                             }
                             // replace backslashes with %5C for the url
-                            const slashFilename =  file.name.replace(/\\/g, '%5C');
+                            const slashFilename = file.name.replace(/\\/g, '%5C');
 
                             if (file.type === 'folder') {
                                 if (folderPath !== '') {
@@ -97,7 +100,7 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
                         <PanelTop size={16} className="mr-2" />
                         Open in AWS Console
                     </DropdownMenuItem>
-                   
+
                 </DropdownMenuContent>
             </DropdownMenu>
         </>

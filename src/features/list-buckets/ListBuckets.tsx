@@ -14,13 +14,13 @@ import { useBucketStore } from '@/store/useBucketStore';
 
 function ListBuckets() {
     const { toast } = useToast();
-    const buckets = useBucketStore((state) => state.buckets);
-    const setBuckets = useBucketStore((state) => state.setBuckets);
+
+    const { setCurrentBucketRegion, setBuckets, buckets } = useBucketStore();
     const { profiles, currentProfile } = useUserSessionStore();
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const [forceRefresh, setForceRefresh] = useState(false);
- 
+
 
     const handleListBuckets = async () => {
         try {
@@ -56,6 +56,7 @@ function ListBuckets() {
     }, [currentProfile, profiles]);
 
     useEffect(() => {
+        setCurrentBucketRegion('');
         setForceRefresh(true)
     }, [currentProfile])
 

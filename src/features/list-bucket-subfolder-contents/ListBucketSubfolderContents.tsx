@@ -4,11 +4,17 @@ import { Card } from '@/components/ui/card';
 import { File as FileIcon, Folder } from 'lucide-react';
 import { File } from '@/lib/app';
 import useSubfolderContents from '@/store/useSubfolderContents';
+import { getFileExtension } from '@/lib/utils';
+import iconMap from '@/components/custom/icons/iconMap';
 
 
 const ListBucketSubfolderContents = () => {
     const { loading, bucketContents, handleCardClick } = useSubfolderContents();
 
+    const getFileIcon = (fileName: string) => {
+        const extension = getFileExtension(fileName);
+        return iconMap[extension] || <FileIcon size={16} />;
+    };
 
     return (
         <div className='relative'>
@@ -32,7 +38,7 @@ const ListBucketSubfolderContents = () => {
                                         file.type === 'folder' ? (
                                             <Folder fill='currentColor' size={16} />
                                         ) : (
-                                            <FileIcon size={16} />
+                                            getFileIcon(file.name)
                                         )
                                     }
                                     <p className='text-sm truncate max-w-[10rem]'>{file.name}</p>

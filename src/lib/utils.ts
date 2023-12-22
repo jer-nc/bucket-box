@@ -14,3 +14,9 @@ export const extractBucketAndFolder = (pathname: string) => {
   const folderPath = folderSegments.join('/');
   return { bucketName, folderPath };
 };
+
+
+export const getFileExtension = (fileName: string): string => {
+  const parts = fileName.split('.');
+  return parts[parts.length - 1].toLowerCase();
+};
