@@ -1,9 +1,8 @@
-import { getBucketContents, getBucketRegion } from '@/cli-functions';
+import { getBucketContents } from '@/cli-functions';
 
-export const fetchBucketContents = async (folderName: string, profile: string) => {
+export const fetchBucketContents = async (folderName: string, profile: string, region: string) => {
   try {
-    const bucketLocation = await getBucketRegion(folderName, profile);
-    const response = await getBucketContents(folderName, profile, bucketLocation);
+    const response = await getBucketContents(folderName, profile, region);
     return response || [];
   } catch (error) {
     console.error(error);

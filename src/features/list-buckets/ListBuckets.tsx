@@ -14,11 +14,11 @@ import { useBucketStore } from '@/store/useBucketStore';
 
 function ListBuckets() {
     const { toast } = useToast();
+    const navigate = useNavigate();
 
     const { setCurrentBucketRegion, setBuckets, buckets } = useBucketStore();
     const { profiles, currentProfile } = useUserSessionStore();
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
     const [forceRefresh, setForceRefresh] = useState(false);
 
 

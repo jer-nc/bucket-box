@@ -24,7 +24,7 @@ const useBucketContents = () => {
                 try {
                     const region = await getBucketRegion(folderName, profile);
                     setCurrentBucketRegion(region);
-                    const contents = await fetchBucketContents(folderName, profile);
+                    const contents = await fetchBucketContents(folderName, profile, region);
                     setBucketContents(contents as File[]);
                     setLoading(false);
                 } catch (error) {
