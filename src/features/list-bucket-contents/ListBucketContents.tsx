@@ -18,12 +18,12 @@ const ListBucketContents = () => {
   const navigate = useNavigate();
   const profile = localStorage.getItem('aws-profile') || '';
   const bucketName = currentPathname.replace('/buckets/', '');
-    const { setCurrentBucketRegion } = useBucketStore();
+  const { setCurrentBucketRegion } = useBucketStore();
 
-  const { data, isLoading, isError, error , isSuccess } = useQuery({
-    queryKey: ['bucketData',profile, bucketName ],
+  const { data, isLoading, isError, error, isSuccess } = useQuery({
+    queryKey: ['bucketData', profile, bucketName],
     queryFn: () => getBucketContents(bucketName, profile),
-    retry: 1,
+    retry: 3,
   });
 
   if (isError) {
@@ -36,19 +36,17 @@ const ListBucketContents = () => {
   }
 
   useEffect(() => {
-    if (isSuccess) {
-      const getCurrentRegion = async () => {
-        try {
-          const currentRegion = await getBucketRegion(bucketName, profile);
-          setCurrentBucketRegion(currentRegion);
-          console.log('currentRegion', currentRegion);
-        } catch (err) {
-          // Handle error if needed
-          console.error('Error fetching region:', err);
-        }
-      };
-      getCurrentRegion();
-    }
+    const getCurrentRegion = async () => {
+      try {
+        const currentRegion = await getBucketRegion(bucketName, profile);
+        setCurrentBucketRegion(currentRegion);
+        console.log('currentRegion', currentRegion);
+      } catch (err) {
+        // Handle error if needed
+        console.error('Error fetching region:', err);
+      }
+    };
+    getCurrentRegion();
   }, [bucketName, profile, isSuccess, setCurrentBucketRegion]);
   console.log('data', data)
 

@@ -11,9 +11,9 @@ export async function getBucketContents(bucket: string, profile: string, region?
             regionFn = await getBucketRegion(bucket, profile) || 'us-east-1';
         }
 
-        if (regionFn === null) {
-            regionFn = 'us-east-1';
-        }
+        // if (regionFn === null) {
+        //     regionFn = 'us-east-1';
+        // }
 
         let bucketPath = 's3://' + bucket;
 

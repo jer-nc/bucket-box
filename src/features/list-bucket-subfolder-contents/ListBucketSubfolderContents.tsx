@@ -24,7 +24,7 @@ const ListBucketSubfolderContents = () => {
     const { data, isLoading, isError, error } = useQuery({
         queryKey: ['bucketDataSubfolder', profile, folderPath],
         queryFn: () => fetchSubfolderContents(bucketName, folderPath, profile, currentBucketRegion),
-        retry: 1,
+        retry: 3,
     });
 
     console.log('data', data)
