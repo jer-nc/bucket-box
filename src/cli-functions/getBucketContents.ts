@@ -3,10 +3,16 @@ import { getBucketRegion } from '.';
 
 export async function getBucketContents(bucket: string, profile: string, region?: string, prefix?: string) {
     try {
-        const regionFn = await getBucketRegion(bucket, profile);
-        // Si la región es 'us-east-1', se usa el valor predeterminado
-        if (region === null) {
-            region = 'us-east-1';
+        let regionFn: string;
+
+        if (region) {
+            regionFn = region;
+        } else {
+            regionFn = await getBucketRegion(bucket, profile) || 'us-east-1';
+        }
+
+        if (regionFn === null) {
+            regionFn = 'us-east-1';
         }
 
         let bucketPath = 's3://' + bucket;
