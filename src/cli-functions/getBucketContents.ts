@@ -1,7 +1,9 @@
 import { Command } from '@tauri-apps/api/shell';
+import { getBucketRegion } from '.';
 
-export async function getBucketContents(bucket: string, profile: string, region: string, prefix?: string) {
+export async function getBucketContents(bucket: string, profile: string, region?: string, prefix?: string) {
     try {
+        const regionFn = await getBucketRegion(bucket, profile);
         // Si la región es 'us-east-1', se usa el valor predeterminado
         if (region === null) {
             region = 'us-east-1';
@@ -13,7 +15,7 @@ export async function getBucketContents(bucket: string, profile: string, region:
             bucketPath += '/' + prefix + '/';
         }
 
-        const command = new Command('aws-cli', ["s3", "ls", bucketPath, "--region", region, "--output", "json", "--profile", profile]);
+        const command = new Command('aws-cli', ["s3", "ls", bucketPath, "--region", regionFn, "--output", "json", "--profile", profile]);
 
         console.log('command', command);
         let errorOutput = '';
