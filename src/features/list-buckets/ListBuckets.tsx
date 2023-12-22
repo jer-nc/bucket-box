@@ -4,7 +4,7 @@ import { toast } from '@/components/ui/use-toast';
 import { listAllBuckets } from '@/cli-functions';
 import { useUserSessionStore } from '@/store/useSessionStore';
 import Spinner from '@/components/custom/loaders/Spinner';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import CardDropdown from '@/components/custom/dropdowns/CardDropdown';
 import bucketIcon from '@/assets/icons/bucket-icon.svg';
@@ -14,13 +14,11 @@ import { Bucket } from '@/lib/app';
 
 function ListBuckets() {
     const { profiles } = useUserSessionStore();
-    const { pathname: currentPathname } = useLocation();
     const navigate = useNavigate();
     const profile = localStorage.getItem('aws-profile') || '';
-    const bucketName = currentPathname.replace('/buckets/', '');
 
     const { data, isLoading, isError, error } = useQuery({
-        queryKey: ['buckets', profile, bucketName],
+        queryKey: ['buckets', profile],
         queryFn: () => listAllBuckets(profile),
         retry: 1,
     });

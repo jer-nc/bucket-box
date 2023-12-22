@@ -4,49 +4,34 @@ import { CardDropdownProps } from "../dropdowns/CardDropdown"
 import { getBucketDetails } from "@/cli-functions/getBucketDetails"
 import { toast } from "@/components/ui/use-toast"
 import { useUserSessionStore } from "@/store/useSessionStore"
-import { useEffect, useState } from "react"
 import SheetSkeleton from "../skeletons/SheetSkeleton"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { useQuery } from "@tanstack/react-query"
 
-interface BucketDetail {
-    location: string;
-    bucketArn: string;
-    policy: string;
-    corsRules: string;
-}
 
 const BucketDetailSheet = ({ bucket }: CardDropdownProps) => {
     const { currentProfile } = useUserSessionStore();
-    const [bucketDetails, setBucketDetails] = useState<BucketDetail>({} as BucketDetail);
-    const [loading, setLoading] = useState(false);
 
-    const handleBucketDetail = async () => {
-        try {
-            setLoading(true);
-            const response = await getBucketDetails(bucket.Name, currentProfile);
-            console.log(response);
-            setBucketDetails(response as BucketDetail);
-        } catch (error) {
-            setLoading(false);
-            console.error(error);
-            if (error instanceof Error) {
-                toast({
-                    title: 'Error',
-                    description: error.message,
-                    variant: 'destructive',
-                    className: 'text-xs',
-                });
-            }
-        } finally {
-            setLoading(false);
-        }
+    
+    const { data, isLoading, isError, error } = useQuery({
+        queryKey: ['bucketDetail', bucket.Name, currentProfile],
+        queryFn: () => getBucketDetails(bucket.Name, currentProfile),
+        retry: 1,
+    });
+
+    if (isError) {
+        toast({
+            title: 'Error',
+            description: error.message,
+            variant: 'destructive',
+            className: 'text-xs',
+        })
     }
 
-    useEffect(() => {
-        handleBucketDetail();
-    }, []);
+    console.log('data', data)
+
 
     return (
         <>
@@ -68,7 +53,7 @@ const BucketDetailSheet = ({ bucket }: CardDropdownProps) => {
                         </p>
 
                         {
-                            loading ? (
+                            isLoading ? (
                                 <SheetSkeleton />
                             ) : (
                                 <ScrollArea className="h-[80vh] ">
@@ -76,20 +61,20 @@ const BucketDetailSheet = ({ bucket }: CardDropdownProps) => {
                                         <p className="text-sm font-semibold">
                                             Region:
                                             <span className="ml-2 font-normal text-muted-foreground">
-                                                {bucketDetails?.location || 'us-east-1'}
+                                                {data?.location || 'us-east-1'}
                                             </span>
                                         </p>
                                         <p className="text-sm font-semibold">
                                             Bucket ARN:
                                             <span className="ml-2 font-normal text-muted-foreground">
-                                                {bucketDetails?.bucketArn}
+                                                {data?.bucketArn}
                                             </span>
                                         </p>
                                         <p className="text-sm font-semibold mt-3 mb-2">
                                             Bucket Policy
                                         </p>
                                         <SyntaxHighlighter className="rounded-md" language="json" style={vs2015}>
-                                            {bucketDetails?.policy ? JSON.stringify(JSON.parse(bucketDetails.policy), null, 2) : 'No policy found'}
+                                            {data?.policy ? JSON.stringify(JSON.parse(data.policy), null, 2) : 'No policy found'}
                                         </SyntaxHighlighter>
 
 
@@ -97,7 +82,7 @@ const BucketDetailSheet = ({ bucket }: CardDropdownProps) => {
                                             Bucket CORS Rules
                                         </p>
                                         <SyntaxHighlighter className="rounded-md" language="json" style={vs2015}>
-                                            {JSON.stringify(bucketDetails?.corsRules, null, 2) || 'No CORS rules found'}
+                                            {JSON.stringify(data?.corsRules, null, 2) || 'No CORS rules found'}
                                         </SyntaxHighlighter>
                                     </div>
                                 </ScrollArea>
