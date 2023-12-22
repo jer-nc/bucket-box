@@ -1,5 +1,5 @@
 import CardDropdownContents from '@/components/custom/dropdowns/CardDropdownContents'
-import iconMap from '@/components/custom/icons/iconMap';
+import IconMap from '@/components/custom/icons/IconMap';
 import Spinner from '@/components/custom/loaders/Spinner'
 import { Card } from '@/components/ui/card'
 import useBucketContents from '@/hooks/useBucketContents';
@@ -37,7 +37,7 @@ const ListBucketContents = () => {
 
   const getFileIcon = (fileName: string) => {
     const extension = getFileExtension(fileName);
-    return iconMap[extension] || <FileIcon size={16} />;
+    return IconMap[extension] || <FileIcon size={16} />;
   };
 
 
