@@ -17,7 +17,7 @@ function ListBuckets() {
     const navigate = useNavigate();
     const profile = localStorage.getItem('aws-profile') || '';
 
-    const { data, isLoading, isError, error } = useQuery({
+    const { data, isLoading, isError, error, refetch, isFetching } = useQuery({
         queryKey: ['buckets', profile],
         queryFn: () => listAllBuckets(profile),
         retry: 1,
@@ -43,13 +43,12 @@ function ListBuckets() {
         <div className='relative'>
             <div className='top-14 sticky w-full z-50  flex justify-between items-center bg-background py-4'>
                 <p className='font-semibold'>S3 Buckets</p>
-
-                <Button size='icon' variant='ghost' >
+                <Button size='icon' variant='ghost' onClick={() => refetch()}>
                     <RefreshCcw size={18} />
                 </Button>
             </div>
-            <div className={`py-4 ${isLoading || profiles.length === 0 || data?.Buckets.length === 0 ? 'flex flex-col justify-center' : 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4'}`}>
-                {isLoading ? (
+            <div className={`py-4 ${isFetching || profiles.length === 0 || data?.Buckets.length === 0 ? 'flex flex-col justify-center' : 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4'}`}>
+                {isLoading || isFetching ? (
                     <div style={{ height: 'calc(100vh - 14.5rem)' }} className='flex items-center justify-center py-8'>
                         <Spinner />
                     </div>

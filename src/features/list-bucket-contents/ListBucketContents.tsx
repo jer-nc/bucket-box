@@ -20,7 +20,7 @@ const ListBucketContents = () => {
   const bucketName = currentPathname.replace('/buckets/', '');
   const { setCurrentBucketRegion } = useBucketStore();
 
-  const { data, isLoading, isError, error, isSuccess } = useQuery({
+  const { data, isLoading, isError, error, isSuccess, isFetching } = useQuery({
     queryKey: ['bucketData', profile, bucketName],
     queryFn: () => getBucketContents(bucketName, profile),
     retry: 3,
@@ -75,7 +75,7 @@ const ListBucketContents = () => {
   return (
     <div className='relative'>
       <div className='py-4'>
-        {isLoading ? (
+        {isLoading || isFetching ? (
           <div style={{ height: 'calc(100vh - 14.5rem)' }} className='mx-auto text-center flex flex-col justify-center'>
             <Spinner />
           </div>

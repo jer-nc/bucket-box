@@ -21,7 +21,7 @@ const ListBucketSubfolderContents = () => {
 
     console.log('bucketName', bucketName)
     console.log('folderPath', folderPath)
-    const { data, isLoading, isError, error } = useQuery({
+    const { data, isLoading, isError, error, isFetching } = useQuery({
         queryKey: ['bucketDataSubfolder', profile, folderPath],
         queryFn: () => fetchSubfolderContents(bucketName, folderPath, profile, currentBucketRegion),
         retry: 3,
@@ -57,7 +57,7 @@ const ListBucketSubfolderContents = () => {
     return (
         <div className='relative'>
             <div className='py-4'>
-                {isLoading ? (
+                {isLoading || isFetching ? (
                     <div style={{ height: 'calc(100vh - 14.5rem)' }} className='mx-auto text-center flex flex-col justify-center'>
                         <Spinner />
                     </div>

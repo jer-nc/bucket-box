@@ -1,14 +1,18 @@
 import { Button } from '@/components/ui/button';
+import { extractBucketAndFolder } from '@/lib/utils';
+import { useUserSessionStore } from '@/store/useSessionStore';
+import { useQueryClient } from '@tanstack/react-query';
 import { ChevronLeft, RefreshCcw } from 'lucide-react';
 import { useLocation, useNavigate, useOutlet } from 'react-router-dom';
-
-
 
 const BucketContentsLayout = () => {
     const outlet = useOutlet();
     const { pathname: currentPathname } = useLocation()
     const navigate = useNavigate();
     console.log('currentPathname', currentPathname)
+    const queryClient = useQueryClient()
+    const { currentProfile } = useUserSessionStore();
+    const { bucketName, folderPath } = extractBucketAndFolder(currentPathname)
 
     const handleNavigate = () => {
         const segments = currentPathname.split('/');
@@ -20,6 +24,8 @@ const BucketContentsLayout = () => {
         }
     }
 
+    const splitedPath = currentPathname.split('/');
+    // console.log('splitedPath', splitedPath)
 
     const currentPathnameWithoutBuckets = currentPathname.replace('/buckets/', '');
 
@@ -34,7 +40,17 @@ const BucketContentsLayout = () => {
                         {currentPathnameWithoutBuckets}
                     </p>
                 </div>
-                <Button size='icon' variant='ghost' >
+                <Button size='icon' variant='ghost' onClick={() => {
+                    if (splitedPath.length === 3) {
+                        queryClient.refetchQueries({
+                            queryKey: ['bucketData', currentProfile, bucketName],
+                        });
+                    } else {
+                        queryClient.refetchQueries({
+                            queryKey: ['bucketDataSubfolder', currentProfile, folderPath],
+                        });
+                    }
+                }}>
                     <RefreshCcw size={18} />
                 </Button>
             </div>
