@@ -1,4 +1,4 @@
-import { getBucketContents } from '@/cli-functions';
+import { getBucketContents, getBucketRegion } from '@/cli-functions';
 import CardDropdownContents from '@/components/custom/dropdowns/CardDropdownContents'
 import IconMap from '@/components/custom/icons/IconMap';
 import Spinner from '@/components/custom/loaders/Spinner'
@@ -6,8 +6,10 @@ import { Card } from '@/components/ui/card'
 import { toast } from '@/components/ui/use-toast';
 import { File } from '@/lib/app'
 import { getFileExtension } from '@/lib/utils';
+import { useBucketStore } from '@/store/useBucketStore';
 import { useQuery } from '@tanstack/react-query';
 import { File as FileIcon, Folder } from 'lucide-react'
+import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom'
 
 
@@ -16,9 +18,10 @@ const ListBucketContents = () => {
   const navigate = useNavigate();
   const profile = localStorage.getItem('aws-profile') || '';
   const bucketName = currentPathname.replace('/buckets/', '');
+    const { setCurrentBucketRegion } = useBucketStore();
 
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['bucketData', bucketName, profile],
+  const { data, isLoading, isError, error , isSuccess } = useQuery({
+    queryKey: ['bucketData',profile, bucketName ],
     queryFn: () => getBucketContents(bucketName, profile),
     retry: 1,
   });
@@ -32,6 +35,21 @@ const ListBucketContents = () => {
     })
   }
 
+  useEffect(() => {
+    if (isSuccess) {
+      const getCurrentRegion = async () => {
+        try {
+          const currentRegion = await getBucketRegion(bucketName, profile);
+          setCurrentBucketRegion(currentRegion);
+          console.log('currentRegion', currentRegion);
+        } catch (err) {
+          // Handle error if needed
+          console.error('Error fetching region:', err);
+        }
+      };
+      getCurrentRegion();
+    }
+  }, [bucketName, profile, isSuccess, setCurrentBucketRegion]);
   console.log('data', data)
 
   const handleNavigate = (prefix: string) => {

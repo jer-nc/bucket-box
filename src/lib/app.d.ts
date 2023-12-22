@@ -9,10 +9,3 @@ export interface Bucket {
     Name: string;
     CreationDate?: string;
 }
-
-export interface MyFile {
-    type: string;
-    name: string;
-    size: number | null;
-    lastModified: string | null;
-}

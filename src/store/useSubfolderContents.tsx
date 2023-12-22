@@ -6,6 +6,7 @@ import { File } from '@/lib/app';
 import { toast } from '@/components/ui/use-toast';
 import { extractBucketAndFolder } from '@/lib/utils';
 import { fetchSubfolderContents } from '@/services/fetchSubfolderContents';
+import { useBucketStore } from './useBucketStore';
 
 
 const useSubfolderContents = () => {
@@ -15,14 +16,14 @@ const useSubfolderContents = () => {
     const [bucketContents, setBucketContents] = useState<File[]>([]);
     const navigate = useNavigate();
     const { bucketName, folderPath } = extractBucketAndFolder(currentPathname);
-
+    const { currentBucketRegion } = useBucketStore();
     useEffect(() => {
         if (profiles.length > 0 && currentPathname !== '/') {
             const fetchData = async () => {
                 try {
                     setLoading(true);
                     const profile = localStorage.getItem('aws-profile') || '';
-                    const response = await fetchSubfolderContents(bucketName, folderPath, profile);
+                    const response = await fetchSubfolderContents(bucketName, folderPath, profile, currentBucketRegion);
 
                     if (response) {
                         setBucketContents(response as File[]);

@@ -9,6 +9,7 @@ import { toast } from '@/components/ui/use-toast';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { fetchSubfolderContents } from '@/services/fetchSubfolderContents';
+import { useBucketStore } from '@/store/useBucketStore';
 
 
 const ListBucketSubfolderContents = () => {
@@ -16,12 +17,13 @@ const ListBucketSubfolderContents = () => {
     const navigate = useNavigate();
     const profile = localStorage.getItem('aws-profile') || '';
     const { bucketName, folderPath } = extractBucketAndFolder(currentPathname);
+    const { currentBucketRegion } = useBucketStore();
 
-console.log('bucketName', bucketName)
+    console.log('bucketName', bucketName)
     console.log('folderPath', folderPath)
     const { data, isLoading, isError, error } = useQuery({
         queryKey: ['bucketDataSubfolder', profile, folderPath],
-        queryFn: () => fetchSubfolderContents(bucketName, folderPath, profile),
+        queryFn: () => fetchSubfolderContents(bucketName, folderPath, profile, currentBucketRegion),
         retry: 1,
     });
 
