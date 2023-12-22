@@ -34,7 +34,6 @@ const ListBucketSubfolderContents = () => {
             title: 'Error',
             description: error.message,
             variant: 'destructive',
-            className: 'text-xs',
         })
     }
     const getFileIcon = (fileName: string) => {

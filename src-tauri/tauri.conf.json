@@ -16,21 +16,28 @@
       "http": {
         "all": true,
         "request": true,
-        "scope": ["http://localhost:3000/*"]
+        "scope": [
+          "http://localhost:3000/*"
+        ]
       },
       "dialog": {
         "all": true,
-        "ask": true, 
-        "confirm": true, 
+        "ask": true,
+        "confirm": true,
         "message": true,
-        "open": true, 
+        "open": true,
         "save": true
       },
+      "clipboard": {
+        "all": true,
+        "writeText": true,
+        "readText": true
+      },
       "shell": {
-        "all": true, 
+        "all": true,
         "execute": true,
-        "sidecar": true, 
-        "open": true ,
+        "sidecar": true,
+        "open": true,
         "scope": [
           {
             "name": "aws-cli",
@@ -40,10 +47,12 @@
           {
             "name": "bash",
             "cmd": "aws",
-            "args": ["configure", "list"]
+            "args": [
+              "configure",
+              "list"
+            ]
           }
         ]
-
       }
     },
     "bundle": {

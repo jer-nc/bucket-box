@@ -28,7 +28,6 @@ function ListBuckets() {
             title: 'Error',
             description: error.message,
             variant: 'destructive',
-            className: 'text-xs',
         })
     }
 
