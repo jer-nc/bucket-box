@@ -1,6 +1,6 @@
 import { Command } from '@tauri-apps/api/shell';
 
-export async function getBucketContents(bucket: string, profile: string, region: string,prefix?: string) {
+export async function getBucketContents(bucket: string, profile: string, region: string, prefix?: string) {
     try {
         // Si la región es 'us-east-1', se usa el valor predeterminado
         if (region === null) {
@@ -8,7 +8,7 @@ export async function getBucketContents(bucket: string, profile: string, region:
         }
 
         let bucketPath = 's3://' + bucket;
-        
+
         if (prefix) {
             bucketPath += '/' + prefix + '/';
         }
