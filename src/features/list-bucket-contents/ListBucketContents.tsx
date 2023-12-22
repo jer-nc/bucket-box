@@ -18,9 +18,11 @@ const ListBucketContents = () => {
   const navigate = useNavigate();
   const profile = localStorage.getItem('aws-profile') || '';
   const bucketName = currentPathname.replace('/buckets/', '');
-  const { setCurrentBucketRegion } = useBucketStore();
+  const { setCurrentBucketRegion , isRefetching } = useBucketStore();
 
-  const { data, isLoading, isError, error, isSuccess, isFetching } = useQuery({
+  console.log('isRefetching', isRefetching)
+
+  const { data, isLoading, isError, error, isSuccess } = useQuery({
     queryKey: ['bucketData', profile, bucketName],
     queryFn: () => getBucketContents(bucketName, profile),
     retry: 3,
@@ -75,7 +77,7 @@ const ListBucketContents = () => {
   return (
     <div className='relative'>
       <div className='py-4'>
-        {isLoading || isFetching ? (
+        {isLoading || isRefetching ? (
           <div style={{ height: 'calc(100vh - 14.5rem)' }} className='mx-auto text-center flex flex-col justify-center'>
             <Spinner />
           </div>

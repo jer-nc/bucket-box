@@ -10,14 +10,16 @@ import CardDropdown from '@/components/custom/dropdowns/CardDropdown';
 import bucketIcon from '@/assets/icons/bucket-icon.svg';
 import { useQuery } from '@tanstack/react-query';
 import { Bucket } from '@/lib/app';
+import { useState } from 'react';
 
 
 function ListBuckets() {
     const { profiles } = useUserSessionStore();
     const navigate = useNavigate();
     const profile = localStorage.getItem('aws-profile') || '';
+    const [isRefetching, setIsRefetching] = useState(false);
 
-    const { data, isLoading, isError, error, refetch, isFetching } = useQuery({
+    const { data, isLoading, isError, error, refetch } = useQuery({
         queryKey: ['buckets', profile],
         queryFn: () => listAllBuckets(profile),
         retry: 1,
@@ -39,16 +41,24 @@ function ListBuckets() {
     };
 
 
+    const handleRefetch = async () => {
+        setIsRefetching(true);
+        await refetch();
+        setIsRefetching(false);
+    };
+
+
+
     return (
         <div className='relative'>
             <div className='top-14 sticky w-full z-50  flex justify-between items-center bg-background py-4'>
                 <p className='font-semibold'>S3 Buckets</p>
-                <Button size='icon' variant='ghost' onClick={() => refetch()}>
+                <Button size='icon' variant='ghost' onClick={handleRefetch}>
                     <RefreshCcw size={18} />
                 </Button>
             </div>
-            <div className={`py-4 ${isFetching || profiles.length === 0 || data?.Buckets.length === 0 ? 'flex flex-col justify-center' : 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4'}`}>
-                {isLoading || isFetching ? (
+            <div className={`py-4 ${isLoading || isRefetching || profiles.length === 0 || data?.Buckets.length === 0 ? 'flex flex-col justify-center' : 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4'}`}>
+                {isLoading || isRefetching ? (
                     <div style={{ height: 'calc(100vh - 14.5rem)' }} className='flex items-center justify-center py-8'>
                         <Spinner />
                     </div>

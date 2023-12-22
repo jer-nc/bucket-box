@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { extractBucketAndFolder } from '@/lib/utils';
+import { useBucketStore } from '@/store/useBucketStore';
 import { useUserSessionStore } from '@/store/useSessionStore';
 import { useQueryClient } from '@tanstack/react-query';
 import { ChevronLeft, RefreshCcw } from 'lucide-react';
@@ -13,6 +14,7 @@ const BucketContentsLayout = () => {
     const queryClient = useQueryClient()
     const { currentProfile } = useUserSessionStore();
     const { bucketName, folderPath } = extractBucketAndFolder(currentPathname)
+    const { setIsRefetching } = useBucketStore()
 
     const handleNavigate = () => {
         const segments = currentPathname.split('/');
@@ -29,6 +31,26 @@ const BucketContentsLayout = () => {
 
     const currentPathnameWithoutBuckets = currentPathname.replace('/buckets/', '');
 
+    const handleRefetch = async () => {
+        setIsRefetching(true);
+        try {
+            if (splitedPath.length === 3) {
+                await queryClient.refetchQueries({
+                    queryKey: ['bucketData', currentProfile, bucketName],
+                });
+            } else {
+                await queryClient.refetchQueries({
+                    queryKey: ['bucketDataSubfolder', currentProfile, folderPath],
+                });
+            }
+        } catch (error) {
+            console.error('Error during refetch:', error);
+        } finally {
+            setIsRefetching(false);
+        }
+    }
+    
+
     return (
         <div>
             <div className='top-14 sticky w-full z-50  flex justify-between items-center bg-background py-4'>
@@ -40,17 +62,7 @@ const BucketContentsLayout = () => {
                         {currentPathnameWithoutBuckets}
                     </p>
                 </div>
-                <Button size='icon' variant='ghost' onClick={() => {
-                    if (splitedPath.length === 3) {
-                        queryClient.refetchQueries({
-                            queryKey: ['bucketData', currentProfile, bucketName],
-                        });
-                    } else {
-                        queryClient.refetchQueries({
-                            queryKey: ['bucketDataSubfolder', currentProfile, folderPath],
-                        });
-                    }
-                }}>
+                <Button size='icon' variant='ghost' onClick={handleRefetch}>
                     <RefreshCcw size={18} />
                 </Button>
             </div>
