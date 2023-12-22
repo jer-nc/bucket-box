@@ -3,6 +3,7 @@ import CardDropdownContents from '@/components/custom/dropdowns/CardDropdownCont
 import IconMap from '@/components/custom/icons/IconMap';
 import Spinner from '@/components/custom/loaders/Spinner'
 import { Card } from '@/components/ui/card'
+import { toast } from '@/components/ui/use-toast';
 import { File } from '@/lib/app'
 import { getFileExtension } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
@@ -16,10 +17,20 @@ const ListBucketContents = () => {
   const profile = localStorage.getItem('aws-profile') || '';
   const bucketName = currentPathname.replace('/buckets/', '');
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ['bucketData', bucketName, profile],
-    queryFn: () => getBucketContents(bucketName, profile)
+    queryFn: () => getBucketContents(bucketName, profile),
+    retry: 1,
   });
+
+  if (isError) {
+    toast({
+      title: 'Error',
+      description: error.message,
+      variant: 'destructive',
+      className: 'text-xs',
+    })
+  }
 
   console.log('data', data)
 
