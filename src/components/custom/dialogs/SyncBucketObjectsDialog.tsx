@@ -55,7 +55,6 @@ const SyncBucketObjectsDialog = ({ file }: SyncBucketDialogProps) => {
       }
       const response = await syncBucketContents(selectedPath!, fullPath, currentProfile, region, isFolder,
         (log: string) => {
-          // Actualiza el responseLog dividiendo los mensajes por saltos de línea
           setResponseLog(prevLog =>
             prevLog ? prevLog + '\n' + log : log
           );

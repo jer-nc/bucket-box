@@ -3,7 +3,6 @@ import { Command } from '@tauri-apps/api/shell';
 export async function syncBucketContents(localPath: string, bucketName: string, profile: string, region: string, isFolder: boolean, updateLogCallback: (log: string) => void) {
     try {
 
-        // Si la región es 'us-east-1', se usa el valor predeterminado
         if (region === null) {
             region = 'us-east-1';
         }
@@ -27,11 +26,9 @@ export async function syncBucketContents(localPath: string, bucketName: string, 
         });
 
         command.stdout.on('data', data => {
-            // Esta línea se ejecutará cada vez que el comando escriba algo en su salida estándar
-            console.log('Archivo descargado:', data.toString());
             const message = data.toString();
-            console.log('Archivo descargado:', message);
-            updateLogCallback(message); // Enviar el mensaje al callback
+            console.log('Files Downloaded:', message);
+            updateLogCallback(message);
         });
 
         const child = await command.execute();
