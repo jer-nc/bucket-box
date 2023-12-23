@@ -10,6 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/components/ui/use-toast";
 import { useLocation } from "react-router-dom";
 import { File } from "@/lib/app";
+import { getBucketName } from "@/lib/utils";
 
 interface SyncBucketDialogProps {
   file: File;
@@ -17,27 +18,10 @@ interface SyncBucketDialogProps {
 
 const SyncBucketObjectsDialog = ({ file }: SyncBucketDialogProps) => {
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
-  const [responseLog, setResponseLog] = useState<string>();
+  const [responseLog, setResponseLog] = useState<React.ReactNode[] | string>();
   const { currentProfile } = useUserSessionStore();
   const [loading, setLoading] = useState(false);
   const { pathname: currentPathname } = useLocation()
-
-
-  const getPathSegments = (pathname: string) => {
-    // Eliminar el primer '/' y luego dividir la cadena por '/'
-    return pathname.substring(1).split('/');
-  };
-
-  const getBucketName = (pathname: string) => {
-    const segments = getPathSegments(pathname);
-    if (segments.length >= 2) {
-      // El bucketname sería el segundo segmento después de "buckets"
-      return segments[1];
-    } else {
-      return null; // Manejar casos donde no haya suficientes segmentos en la ruta
-    }
-  };
-
 
 
   const openDialog = async () => {
@@ -69,7 +53,14 @@ const SyncBucketObjectsDialog = ({ file }: SyncBucketDialogProps) => {
       } else {
         isFolder = false;
       }
-      const response = await syncBucketContents(selectedPath!, fullPath, currentProfile, region, isFolder);
+      const response = await syncBucketContents(selectedPath!, fullPath, currentProfile, region, isFolder,
+        (log: string) => {
+          // Actualiza el responseLog dividiendo los mensajes por saltos de línea
+          setResponseLog(prevLog =>
+            prevLog ? prevLog + '\n' + log : log
+          );
+        }
+      );
       if (response && response?.length > 0) {
         toast({
           title: 'Success',
@@ -77,7 +68,13 @@ const SyncBucketObjectsDialog = ({ file }: SyncBucketDialogProps) => {
           variant: 'default',
           className: 'text-xs',
         });
-        setResponseLog(response);
+        const responseMessages = response.split('\n').map((message, index) => (
+          <p key={index} className="text-xs text-muted-foreground font-normal">
+            {message}
+          </p>
+        ));
+    
+        setResponseLog(responseMessages);
       } else {
         setResponseLog("No files downloaded.");
       }
@@ -135,7 +132,7 @@ const SyncBucketObjectsDialog = ({ file }: SyncBucketDialogProps) => {
           }
           {responseLog &&
             <ScrollArea className="w-full max-h-[300px] py-6">
-              <div>
+              <div className="space-y-2">
                 <p className="text-xs text-muted-foreground font-normal">{responseLog}</p>
               </div>
             </ScrollArea>
