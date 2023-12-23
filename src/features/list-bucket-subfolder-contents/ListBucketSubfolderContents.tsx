@@ -19,15 +19,13 @@ const ListBucketSubfolderContents = () => {
     const { bucketName, folderPath } = extractBucketAndFolder(currentPathname);
     const { currentBucketRegion , isRefetching} = useBucketStore();
 
-    console.log('bucketName', bucketName)
-    console.log('folderPath', folderPath)
     const { data, isLoading, isError, error } = useQuery({
         queryKey: ['bucketDataSubfolder', profile, folderPath],
         queryFn: () => fetchSubfolderContents(bucketName, folderPath, profile, currentBucketRegion),
         retry: 3,
     });
 
-    console.log('data', data)
+    // console.log('data', data)
 
     if (isError) {
         toast({

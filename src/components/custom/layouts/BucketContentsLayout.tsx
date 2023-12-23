@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { toast } from '@/components/ui/use-toast';
 import { extractBucketAndFolder } from '@/lib/utils';
 import { useBucketStore } from '@/store/useBucketStore';
 import { useUserSessionStore } from '@/store/useSessionStore';
@@ -10,7 +11,6 @@ const BucketContentsLayout = () => {
     const outlet = useOutlet();
     const { pathname: currentPathname } = useLocation()
     const navigate = useNavigate();
-    console.log('currentPathname', currentPathname)
     const queryClient = useQueryClient()
     const { currentProfile } = useUserSessionStore();
     const { bucketName, folderPath } = extractBucketAndFolder(currentPathname)
@@ -27,7 +27,6 @@ const BucketContentsLayout = () => {
     }
 
     const splitedPath = currentPathname.split('/');
-    // console.log('splitedPath', splitedPath)
 
     const currentPathnameWithoutBuckets = currentPathname.replace('/buckets/', '');
 
@@ -43,13 +42,20 @@ const BucketContentsLayout = () => {
                     queryKey: ['bucketDataSubfolder', currentProfile, folderPath],
                 });
             }
-        } catch (error) {
-            console.error('Error during refetch:', error);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                toast({
+                    title: 'Error',
+                    description: error.message,
+                    variant: 'destructive',
+                })
+                console.error('Error during refetch:', error);
+            }
         } finally {
             setIsRefetching(false);
         }
     }
-    
+
 
     return (
         <div>
