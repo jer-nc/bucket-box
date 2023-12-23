@@ -7,9 +7,14 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input"
 import RegionCombobox from "@/components/custom/combobox/RegionCombobox"
 import { Checkbox } from "@/components/ui/checkbox"
+import { useUserSessionStore } from "@/store/useSessionStore"
+import { createBucket } from "@/cli-functions/createBucket"
+import { toast } from "@/components/ui/use-toast"
+
 
 const CreateBucket = () => {
-    // 1. Define your form.
+    const { currentProfile } = useUserSessionStore()
+
     const form = useForm<z.infer<typeof bucketSchema>>({
         resolver: zodResolver(bucketSchema),
         defaultValues: {
@@ -22,17 +27,34 @@ const CreateBucket = () => {
         },
     })
 
-    // 2. Define a submit handler.
-    function onSubmit() {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
+    async function onSubmit() {
         const values = form.getValues()
         console.log(values)
+        const { bucketName, region } = values
+        try {
+            const res = await createBucket({ bucketName, region, profile: currentProfile })
+            console.log(res)
+            if (res && res.Location.includes(bucketName)) {
+                toast({
+                    title: "Success",
+                    description: `Successfully created bucket ${bucketName}`,
+                    variant: "default",
+                })
+            }
+        } catch (error) {
+            console.error(error)
+            if (error instanceof Error) {
+                toast({
+                    title: "Error",
+                    description: `Failed to create bucket ${bucketName} - ${error.message}`,
+                    variant: "destructive",
+                })
+            }
+        }
     }
 
-
     return (
-        <div className="">
+        <div>
             <div className="py-4">
                 <h2 className="text-2xl font-semibold">Create S3 Bucket</h2>
                 <p className="text-muted-foreground text-sm mt-2">

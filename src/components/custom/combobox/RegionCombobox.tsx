@@ -48,7 +48,7 @@ const RegionCombobox = ({ form }: RegionComboboxProps) => {
                                     placeholder="Search AWS Region..."
                                     className="h-9"
                                 />
-                                <ScrollArea className="h-80">
+                                <ScrollArea className="h-72">
                                 <CommandEmpty>No region found.</CommandEmpty>
                                     <CommandGroup>
                                         {awsRegions.map((region) => (
