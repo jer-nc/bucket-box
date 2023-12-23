@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command"
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { CheckIcon, SortAsc } from "lucide-react"
+import { CheckIcon, ChevronsUpDown } from "lucide-react"
 import { awsRegions } from "@/lib/aws-regions"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
@@ -38,7 +38,7 @@ const RegionCombobox = ({ form }: RegionComboboxProps) => {
                                             (region) => region.value === field.value
                                         )?.label
                                         : "Select region"}
-                                    <SortAsc className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                 </Button>
                             </FormControl>
                         </PopoverTrigger>
