@@ -7,9 +7,10 @@ import { toast } from "@/components/ui/use-toast"
 import { FolderResponse } from "@/lib/app"
 import { folderBucketSchema } from "@/schemas/folder-bucket-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { FolderPlus } from "lucide-react"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
+import { useLocation } from "react-router-dom"
 import { z } from "zod"
 
 interface CreateFolderDialogProps {
@@ -19,6 +20,10 @@ interface CreateFolderDialogProps {
 }
 
 const CreateFolderDialog = ({ bucketName, folderPath, profile }: CreateFolderDialogProps) => {
+    const { pathname: currentPathname } = useLocation()
+    const queryClient = useQueryClient()
+
+    const splitedPath = currentPathname.split('/');
 
     const form = useForm<z.infer<typeof folderBucketSchema>>({
         resolver: zodResolver(folderBucketSchema),
@@ -37,8 +42,9 @@ const CreateFolderDialog = ({ bucketName, folderPath, profile }: CreateFolderDia
             const res = { res: folderResponse, variables: { name } };
             return res;
         },
-        onSuccess: ({ res, variables }) => {
+        onSuccess: async ({ res, variables }) => {
             const { name } = variables;
+            form.reset();
             if (res) {
                 toast({
                     title: "Success",
@@ -46,7 +52,16 @@ const CreateFolderDialog = ({ bucketName, folderPath, profile }: CreateFolderDia
                     variant: "default",
                 });
             }
-            form.reset();
+            if (splitedPath.length === 3) {
+                await queryClient.refetchQueries({
+                    queryKey: ['bucketData', profile, bucketName],
+                });
+            } else {
+                await queryClient.refetchQueries({
+                    queryKey: ['bucketDataSubfolder', profile, folderPath],
+                });
+            }
+            document.getElementById('closeDialog')?.click();
         },
         onError: (error) => {
             form.reset();
@@ -69,7 +84,7 @@ const CreateFolderDialog = ({ bucketName, folderPath, profile }: CreateFolderDia
 
     return (
         <Dialog>
-            <DialogTrigger>
+            <DialogTrigger asChild>
                 <Button size='icon' variant='ghost'>
                     <FolderPlus size={16} />
                 </Button>
