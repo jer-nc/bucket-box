@@ -31,41 +31,41 @@ const CreateBucket = () => {
     })
 
     const createBucketMutation = useMutation<
-    { res: BucketResponse; variables: { bucketName: string; region: string; profile: string } },
-    Error,
-    { bucketName: string; region: string; profile: string }
-  >({
-    mutationFn: async ({ bucketName, region, profile }) => {
-      const res = await createBucket({ bucketName, region, profile });
-      return { res, variables: { bucketName, region, profile } };
-    },
-    onSuccess: ({ res, variables }) => {
-      const { bucketName } = variables;
-      if (res && res.Location.includes(bucketName)) {
-        toast({
-          title: "Success",
-          description: `Successfully created bucket ${bucketName}`,
-          variant: "default",
-        });
-        navigate(`/buckets/${bucketName}`);
-      }
-    },
-    onError: (error, variables) => {
-      const { bucketName } = variables;
-      if (error instanceof Error) {
-        toast({
-          title: "Error",
-          description: `Failed to create bucket ${bucketName} - ${error.message}`,
-          variant: "destructive",
-        });
-      }
-    },
-  });
+        { res: BucketResponse; variables: { bucketName: string; region: string; profile: string } },
+        Error,
+        { bucketName: string; region: string; profile: string }
+    >({
+        mutationFn: async ({ bucketName, region, profile }) => {
+            const res = await createBucket({ bucketName, region, profile });
+            return { res, variables: { bucketName, region, profile } };
+        },
+        onSuccess: ({ res, variables }) => {
+            const { bucketName } = variables;
+            if (res && res.Location.includes(bucketName)) {
+                toast({
+                    title: "Success",
+                    description: `Successfully created bucket ${bucketName}`,
+                    variant: "default",
+                });
+                navigate(`/buckets/${bucketName}`);
+            }
+        },
+        onError: (error, variables) => {
+            const { bucketName } = variables;
+            if (error instanceof Error) {
+                toast({
+                    title: "Error",
+                    description: `Failed to create bucket ${bucketName} - ${error.message}`,
+                    variant: "destructive",
+                });
+            }
+        },
+    });
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    const { bucketName, region } = data as BucketValues;
-    createBucketMutation.mutate({ bucketName, region, profile: currentProfile });
-  };
+    const onSubmit: SubmitHandler<FieldValues> = (data) => {
+        const { bucketName, region } = data as BucketValues;
+        createBucketMutation.mutate({ bucketName, region, profile: currentProfile });
+    };
 
 
 
@@ -122,7 +122,7 @@ const CreateBucket = () => {
                         <div className="w-full flex justify-end">
                             <Button type="submit" disabled={createBucketMutation.status === 'pending'}>
                                 {
-                                      createBucketMutation.status === 'pending' ? (
+                                    createBucketMutation.status === 'pending' ? (
                                         <div className="flex items-center gap-2">
                                             <div className="w-4 h-4 rounded-full border-2 border-transparent animate-spin" style={{ borderTopColor: 'currentColor' }}></div>
                                             Creating...

@@ -6,6 +6,7 @@ import { useUserSessionStore } from '@/store/useSessionStore';
 import { useQueryClient } from '@tanstack/react-query';
 import { ChevronLeft, RefreshCcw } from 'lucide-react';
 import { useLocation, useNavigate, useOutlet } from 'react-router-dom';
+import CreateFolderDialog from '../dialogs/CreateFolderDialog';
 
 const BucketContentsLayout = () => {
     const outlet = useOutlet();
@@ -68,9 +69,12 @@ const BucketContentsLayout = () => {
                         {currentPathnameWithoutBuckets}
                     </p>
                 </div>
-                <Button size='icon' variant='ghost' onClick={handleRefetch}>
-                    <RefreshCcw size={18} />
-                </Button>
+                <div className='flex items-center gap-2'>
+                    <CreateFolderDialog bucketName={bucketName} folderPath={folderPath} profile={currentProfile} />
+                    <Button size='icon' variant='ghost' onClick={handleRefetch}>
+                        <RefreshCcw size={18} />
+                    </Button>
+                </div>
             </div>
             {outlet}
         </div>
