@@ -18,7 +18,11 @@ export interface BucketValues {
     bucketName: string;
     region: string;
     publicAccessBlock: {
-      blockAll: boolean;
+        blockAll: boolean;
     };
-  }
-  
+}
+
+export interface FolderResponse {
+    ETag: string;
+    ServerSideEncryption: string;
+}

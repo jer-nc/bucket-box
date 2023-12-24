@@ -4,6 +4,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
+import { FolderResponse } from "@/lib/app"
 import { folderBucketSchema } from "@/schemas/folder-bucket-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
@@ -15,15 +16,6 @@ interface CreateFolderDialogProps {
     bucketName: string
     folderPath: string
     profile: string
-}
-
-interface Folder {
-    name: string
-}
-
-type FolderResponse = {
-    ETag: string;
-    ServerSideEncryption: string;
 }
 
 const CreateFolderDialog = ({ bucketName, folderPath, profile }: CreateFolderDialogProps) => {
@@ -67,7 +59,7 @@ const CreateFolderDialog = ({ bucketName, folderPath, profile }: CreateFolderDia
     });
 
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
-        const { name } = data as Folder;
+        const { name } = data as { name: string };
         createBucketMutation.mutate({ name });
     };
 
