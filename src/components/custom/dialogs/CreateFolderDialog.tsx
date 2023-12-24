@@ -1,7 +1,7 @@
 import { createBucketFolder } from "@/cli-functions/createBucketFolder"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
 import { FolderResponse } from "@/lib/app"
@@ -46,8 +46,10 @@ const CreateFolderDialog = ({ bucketName, folderPath, profile }: CreateFolderDia
                     variant: "default",
                 });
             }
+            form.reset();
         },
         onError: (error) => {
+            form.reset();
             if (error instanceof Error) {
                 toast({
                     title: "Error",
@@ -55,6 +57,7 @@ const CreateFolderDialog = ({ bucketName, folderPath, profile }: CreateFolderDia
                     variant: "destructive",
                 });
             }
+
         },
     });
 
@@ -75,7 +78,7 @@ const CreateFolderDialog = ({ bucketName, folderPath, profile }: CreateFolderDia
                 <DialogHeader>
                     <DialogTitle>Create Folder</DialogTitle>
                     <DialogDescription className="py-4">
-                        Create a new folder in <span className="font-semibold text-emerald-500">{bucketName && folderPath.length > 0 ? bucketName + '/' + folderPath + '/' : bucketName + '/' + folderPath}</span> bucket.
+                        Create a new folder in <span className="font-semibold text-emerald-500">{bucketName && folderPath.length > 0 ? bucketName + '/' + folderPath + '/' : bucketName + '/' + folderPath}</span> path.
                     </DialogDescription>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="pt-2 space-y-4">
@@ -85,20 +88,19 @@ const CreateFolderDialog = ({ bucketName, folderPath, profile }: CreateFolderDia
                                     name="name"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Bucket Name</FormLabel>
+                                            <FormLabel>Folder Name</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="my-bucket-name" {...field} />
+                                                <Input placeholder="Enter folder name" {...field} />
                                             </FormControl>
-                                            <FormDescription>
-                                                Bucket names must be unique across all existing bucket names in Amazon S3.
-                                            </FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
                             </div>
-
-                            <div className="w-full flex justify-end">
+                            <DialogFooter className="pt-4">
+                                <DialogClose asChild>
+                                    <Button variant="outline">Cancel</Button>
+                                </DialogClose>
                                 <Button type="submit" disabled={createBucketMutation.status === 'pending'}>
                                     {
                                         createBucketMutation.status === 'pending' ? (
@@ -108,22 +110,15 @@ const CreateFolderDialog = ({ bucketName, folderPath, profile }: CreateFolderDia
                                             </div>
                                         ) : (
                                             <div className="flex items-center">
-                                                Create Bucket
+                                                Create Folder
                                             </div>
                                         )
                                     }
                                 </Button>
-                            </div>
+                            </DialogFooter>
                         </form>
                     </Form>
-                    <DialogFooter className="pt-4">
-                        <DialogClose asChild>
-                            <Button variant="outline">Cancel</Button>
-                        </DialogClose>
-                        <Button >
-                            Create Folder
-                        </Button>
-                    </DialogFooter>
+
                 </DialogHeader>
             </DialogContent>
         </Dialog>

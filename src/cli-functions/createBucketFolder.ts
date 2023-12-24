@@ -14,8 +14,26 @@ type FolderResponse = {
 }
 
 export async function createBucketFolder({ bucketName, folderPath, folderName, profile }: CreateBucketFolderParams): Promise<FolderResponse> {
+   let regionFn = ''
+   
     const region = await getBucketRegion(bucketName, profile);
-    const command = new Command('aws-cli', ["s3api", "put-object", "--bucket", bucketName, "--key", folderPath + '/' + folderName + '/', "--profile", profile, '--region', region, '--output', 'json']);
+
+    if (region !== null) {
+        regionFn = region;
+    } else {
+        regionFn = 'us-east-1';
+    }
+
+    const commandArgs = ["s3api", "put-object", "--bucket", bucketName, "--profile", profile, '--region', regionFn, '--output', 'json'];
+
+    if (folderPath !== '') {
+        commandArgs.push("--key", `${folderPath}/${folderName}/`);
+    } else {
+        commandArgs.push("--key", `${folderName}/`);
+    }
+
+    const command = new Command('aws-cli', commandArgs);
+    
     let errorOutput = '';
     console.log('command', command);
     command.stderr.on('data', data => {
