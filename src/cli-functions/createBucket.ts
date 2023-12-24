@@ -1,13 +1,10 @@
+import { BucketResponse } from "@/lib/app";
 import { Command } from "@tauri-apps/api/shell";
 
 type CreateBucketParams = {
     bucketName: string,
     region: string,
     profile: string
-}
-
-interface BucketResponse {
-    Location: string;
 }
 
 

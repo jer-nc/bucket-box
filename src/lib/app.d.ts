@@ -9,3 +9,16 @@ export interface Bucket {
     Name: string;
     CreationDate?: string;
 }
+
+export interface BucketResponse {
+    Location: string;
+}
+
+export interface BucketValues {
+    bucketName: string;
+    region: string;
+    publicAccessBlock: {
+      blockAll: boolean;
+    };
+  }
+  
