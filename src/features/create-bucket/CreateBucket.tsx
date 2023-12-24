@@ -10,10 +10,15 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { useUserSessionStore } from "@/store/useSessionStore"
 import { createBucket } from "@/cli-functions/createBucket"
 import { toast } from "@/components/ui/use-toast"
+import { useNavigate } from "react-router-dom"
+import { useState } from "react"
 
 
 const CreateBucket = () => {
+    const [loading, setLoading] = useState(false)
+
     const { currentProfile } = useUserSessionStore()
+    const navigate = useNavigate()
 
     const form = useForm<z.infer<typeof bucketSchema>>({
         resolver: zodResolver(bucketSchema),
@@ -23,11 +28,11 @@ const CreateBucket = () => {
             publicAccessBlock: {
                 blockAll: true,
             },
-            versioning: false,
         },
     })
 
     async function onSubmit() {
+        setLoading(true)
         const values = form.getValues()
         console.log(values)
         const { bucketName, region } = values
@@ -40,8 +45,10 @@ const CreateBucket = () => {
                     description: `Successfully created bucket ${bucketName}`,
                     variant: "default",
                 })
+                navigate(`/buckets/${bucketName}`)
             }
         } catch (error) {
+            setLoading(false)
             console.error(error)
             if (error instanceof Error) {
                 toast({
@@ -50,6 +57,8 @@ const CreateBucket = () => {
                     variant: "destructive",
                 })
             }
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -102,32 +111,22 @@ const CreateBucket = () => {
                                     </FormItem>
                                 )}
                             />
-
-                            <FormField
-                                control={form.control}
-                                name="versioning"
-                                render={({ field }) => (
-                                    <FormItem className="flex items-center gap-2">
-                                        <FormControl>
-                                            <Checkbox
-                                                className="mt-2"
-                                                id={field.name}
-                                                defaultChecked={field.value as boolean}
-                                                value={typeof field.value === 'boolean' ? field.value.toString() : field.value}
-                                                onCheckedChange={(e) => {
-                                                    field.onChange(e);
-                                                    console.log(e)
-                                                }}
-                                            />
-                                        </FormControl>
-                                        <FormLabel>Enable Versioning</FormLabel>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
                         </div>
                         <div className="w-full flex justify-end">
-                            <Button type="submit">Create Bucket</Button>
+                            <Button type="submit" disabled={loading}>
+                                {
+                                    loading ? (
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-4 h-4 rounded-full border-2 border-transparent animate-spin" style={{ borderTopColor: 'currentColor' }}></div>
+                                            Creating...
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-center">
+                                            Create Bucket
+                                        </div>
+                                    )
+                                }
+                            </Button>
                         </div>
                     </form>
                 </Form>

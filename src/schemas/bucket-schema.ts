@@ -7,5 +7,4 @@ export const bucketSchema = z.object({
     publicAccessBlock: z.object({
         blockAll: z.boolean(),
     }),
-    versioning: z.boolean(),
 })
