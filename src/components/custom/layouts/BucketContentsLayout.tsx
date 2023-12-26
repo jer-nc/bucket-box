@@ -74,7 +74,7 @@ const BucketContentsLayout = () => {
                     <UploadFilesDialog bucketName={bucketName} folderPath={folderPath} profile={currentProfile} />
                     <CreateFolderDialog bucketName={bucketName} folderPath={folderPath} profile={currentProfile} />
                     <Button size='icon' variant='ghost' onClick={handleRefetch}>
-                        <RefreshCcw size={18} />
+                        <RefreshCcw size={16} />
                     </Button>
                 </div>
             </div>

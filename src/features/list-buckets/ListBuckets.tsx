@@ -54,7 +54,7 @@ function ListBuckets() {
             <div className='top-14 sticky w-full z-50 flex justify-between items-center bg-background py-4'>
                 <p className='font-semibold'>S3 Buckets</p>
                 <Button size='icon' variant='ghost' onClick={handleRefetch}>
-                    <RefreshCcw size={18} />
+                    <RefreshCcw size={16} />
                 </Button>
             </div>
             <div className={`py-4 ${isLoading || isRefetching || profiles.length === 0 || data?.Buckets.length === 0 ? 'flex flex-col justify-center' : 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4'}`}>
