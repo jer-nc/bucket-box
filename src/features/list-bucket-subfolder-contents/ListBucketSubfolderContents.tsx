@@ -3,21 +3,24 @@ import Spinner from '@/components/custom/loaders/Spinner';
 import { Card } from '@/components/ui/card';
 import { File as FileIcon, Folder } from 'lucide-react';
 import { File } from '@/lib/app';
-import { extractBucketAndFolder, getFileExtension } from '@/lib/utils';
+import { getFileExtension } from '@/lib/utils';
 import IconMap from '@/components/custom/icons/IconMap';
 import { toast } from '@/components/ui/use-toast';
 import { useQuery } from '@tanstack/react-query';
-import { useLocation, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import { fetchSubfolderContents } from '@/services/fetchSubfolderContents';
 import { useBucketStore } from '@/store/useBucketStore';
 
+interface ListBucketSubfolderContentsProps {
+    bucketName: string;
+    folderPath: string;
+    profile: string;
+    currentPathname: string;
+}
 
-const ListBucketSubfolderContents = () => {
-    const { pathname: currentPathname } = useLocation();
+const ListBucketSubfolderContents = ({ bucketName, folderPath, currentPathname, profile }: ListBucketSubfolderContentsProps) => {
     const navigate = useNavigate();
-    const profile = localStorage.getItem('aws-profile') || '';
-    const { bucketName, folderPath } = extractBucketAndFolder(currentPathname);
-    const { currentBucketRegion , isRefetching} = useBucketStore();
+    const { currentBucketRegion, isRefetching } = useBucketStore();
 
     const { data, isLoading, isError, error } = useQuery({
         queryKey: ['bucketDataSubfolder', profile, folderPath],

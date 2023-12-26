@@ -7,13 +7,12 @@ import { useLocation } from "react-router-dom"
 const FolderPage = () => {
   const { pathname: currentPathname } = useLocation()
   const { currentProfile } = useUserSessionStore()
-  const { folderPath, bucketName } = extractBucketAndFolder(currentPathname);
-  console.log(folderPath, bucketName)
+  const { bucketName } = extractBucketAndFolder(currentPathname);
 
   return (
     <>
-      <UploadFiles bucketName={bucketName} folderPath={folderPath} profile={currentProfile} />
-      <ListBucketContents bucketName={bucketName}  profile={currentProfile} />
+      <UploadFiles bucketName={bucketName} profile={currentProfile} currentPathname={currentPathname} />
+      <ListBucketContents bucketName={bucketName} profile={currentProfile} />
     </>
   )
 }
