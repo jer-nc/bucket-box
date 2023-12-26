@@ -8,7 +8,7 @@ import IconMap from '@/components/custom/icons/IconMap';
 import { toast } from '@/components/ui/use-toast';
 import { useQuery } from '@tanstack/react-query';
 import {  useNavigate } from 'react-router-dom';
-import { fetchSubfolderContents } from '@/services/fetchSubfolderContents';
+import { fetchSubfolderContents } from '@/lib/fetchSubfolderContents';
 import { useBucketStore } from '@/store/useBucketStore';
 
 interface ListBucketSubfolderContentsProps {
