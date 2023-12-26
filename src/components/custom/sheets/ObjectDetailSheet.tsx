@@ -114,7 +114,9 @@ const ObjectDetailSheet = ({ file, bucketName, folderPath }: ObjectDetail) => {
                                         </p>
                                         {/\.(jpg|jpeg|png|gif|svg|webp)$/i.test(file.name) ? (
                                             /* Si la extensión es de una imagen */
-                                            <img src={content} alt={file.name} />
+                                            <div className="w-full flex justify-center object-contain ">
+                                                <img className="rounded-md" src={content} alt={file.name} />
+                                            </div>
                                         ) : codeExtensions.some(ext => file.name.endsWith(ext)) ? (
                                             /* Si la extensión coincide con una de lenguaje de programación */
                                             <CodeBlock data={fileText} language={file.name.split('.').pop()!} />
