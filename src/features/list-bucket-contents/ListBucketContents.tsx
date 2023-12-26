@@ -12,13 +12,16 @@ import { File as FileIcon, Folder } from 'lucide-react'
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom'
 
+interface ListBucketContentsProps {
+  bucketName: string;
+  profile: string;
+}
 
-const ListBucketContents = () => {
+
+const ListBucketContents = ({ bucketName, profile }: ListBucketContentsProps) => {
   const { pathname: currentPathname } = useLocation();
   const navigate = useNavigate();
-  const profile = localStorage.getItem('aws-profile') || '';
-  const bucketName = currentPathname.replace('/buckets/', '');
-  const { setCurrentBucketRegion , isRefetching } = useBucketStore();
+  const { setCurrentBucketRegion, isRefetching } = useBucketStore();
 
   console.log('isRefetching', isRefetching)
 
