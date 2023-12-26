@@ -58,7 +58,7 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
                                     console.log('click')
                                 }}
                             >
-                                <ObjectDetailSheet file={file} />
+                                <ObjectDetailSheet  bucketName={bucketName} folderPath={folderPath} file={file} />
                             </DropdownMenuItem>
                         )
                     }

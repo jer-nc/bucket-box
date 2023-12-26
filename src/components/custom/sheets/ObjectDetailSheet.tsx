@@ -5,19 +5,47 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { useEffect, useState } from "react"
 import { File } from "@/lib/app"
 import { toast } from "@/components/ui/use-toast"
+import { getFileContent } from "@/cli-functions/getFileContent"
+import CodeBlock from "../codeblock/CodeBlock"
+import { useUserSessionStore } from "@/store/useSessionStore"
 
 
 interface ObjectDetail {
     file: File;
+    bucketName: string;
+    folderPath: string;
 }
 
-const ObjectDetailSheet = ({ file }: ObjectDetail) => {
+const ObjectDetailSheet = ({ file, bucketName, folderPath }: ObjectDetail) => {
+    const [content, setContent] = useState('')
+    const [fileText, setFileText] = useState('')
+    const { currentProfile } = useUserSessionStore();
+    const codeExtensions = ['.js', '.py', '.java', '.json', '.ts', '.rs', '.go', '.php', '.c', '.cpp', '.h', '.hpp', '.cs', '.html', '.xml', '.yml', '.yaml', '.sh', '.bat', '.ps1', '.sql', '.rb', '.pl', '.lua', '.swift', '.kt', '.ktm', '.kts', '.clj', '.cljs', '.cljc', '.edn', '.scala', '.groovy'];
 
     const [loading, setLoading] = useState(false);
+    const isImageFile = /\.(jpg|jpeg|png|gif|svg|webp)$/i.test(file.name);
+    const isCodeFile = codeExtensions.some(ext => file.name.endsWith(ext));
 
     const handleGetObject = async () => {
         try {
             setLoading(true);
+            const result = await getFileContent({ bucketName, folderPath, fileName: file.name, currentProfile });
+            console.log(result);
+            if (result !== null) {
+                if (isCodeFile) {
+                    const response = await fetch(result);
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok.');
+                    }
+                    const data = await response.text();
+                    setFileText(data);
+                } else if (isImageFile) {
+                    setContent(result);
+                }
+            } else {
+                setContent('');
+            }
+
         } catch (error) {
             setLoading(false);
             console.error(error);
@@ -37,6 +65,7 @@ const ObjectDetailSheet = ({ file }: ObjectDetail) => {
     useEffect(() => {
         handleGetObject();
     }, []);
+
 
     return (
         <>
@@ -78,24 +107,33 @@ const ObjectDetailSheet = ({ file }: ObjectDetail) => {
                             loading ? (
                                 <SheetSkeleton />
                             ) : (
-                                <ScrollArea className="h-[80vh] ">
-                                    {/* <div className="py-6 pr-4">
-                                        <p className="text-sm font-semibold">
-                                            Region:
-                                            <span className="ml-2 font-normal text-muted-foreground">
-                                                {bucketDetails?.location || 'us-east-1'}
-                                            </span>
+                                <ScrollArea className="h-[75vh] pt-2">
+                                    <div>
+                                        <p className="font-semibold mb-4">
+                                            Preview Content
                                         </p>
-                                        <p className="text-sm font-semibold">
-                                            Bucket ARN:
-                                            <span className="ml-2 font-normal text-muted-foreground">
-                                                {bucketDetails?.bucketArn}
-                                            </span>
-                                        </p>
-                                        <p className="text-sm font-semibold mt-3 mb-2">
-                                            Bucket Policy
-                                        </p>
-                                    </div> */}
+                                        {/\.(jpg|jpeg|png|gif|svg|webp)$/i.test(file.name) ? (
+                                            /* Si la extensión es de una imagen */
+                                            <img src={content} alt={file.name} />
+                                        ) : codeExtensions.some(ext => file.name.endsWith(ext)) ? (
+                                            /* Si la extensión coincide con una de lenguaje de programación */
+                                            <CodeBlock data={fileText} language={file.name.split('.').pop()!} />
+                                        ) :
+                                            (
+                                                fileText ? (
+                                                    <p className="text-sm font-normal text-muted-foreground">
+                                                        {fileText}
+                                                    </p>
+                                                ) :
+                                                    (
+                                                        <p className="text-sm font-normal text-muted-foreground">
+                                                            No preview available
+                                                        </p>
+                                                    )
+                                            )
+                                        }
+                                    </div>
+
                                 </ScrollArea>
                             )
                         }
