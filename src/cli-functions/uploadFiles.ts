@@ -5,6 +5,7 @@ export async function uploadFiles({ bucketName, folderPath, profile, files }: { 
     const results = [];
     for (const file of files) {
         let command;
+        
         const s3Path = folderPath ? `s3://${bucketName}/${folderPath}/${file.filename}` : `s3://${bucketName}/${file.filename}`;
         if (file.type === 'directory') {
             command = new Command('aws-cli', ['s3', 'sync', file.path, s3Path, '--profile', profile]);

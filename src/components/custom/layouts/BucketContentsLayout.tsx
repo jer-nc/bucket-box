@@ -7,6 +7,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { ChevronLeft, RefreshCcw } from 'lucide-react';
 import { useLocation, useNavigate, useOutlet } from 'react-router-dom';
 import CreateFolderDialog from '../dialogs/CreateFolderDialog';
+import UploadFilesDialog from '../dialogs/UploadFilesDialog';
 
 const BucketContentsLayout = () => {
     const outlet = useOutlet();
@@ -70,6 +71,7 @@ const BucketContentsLayout = () => {
                     </p>
                 </div>
                 <div className='flex items-center gap-2'>
+                    <UploadFilesDialog bucketName={bucketName} folderPath={folderPath} profile={currentProfile} />
                     <CreateFolderDialog bucketName={bucketName} folderPath={folderPath} profile={currentProfile} />
                     <Button size='icon' variant='ghost' onClick={handleRefetch}>
                         <RefreshCcw size={18} />
