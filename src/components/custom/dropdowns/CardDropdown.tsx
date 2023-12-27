@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { MoreVertical, PanelTop, Trash2 } from "lucide-react";
 import { open } from '@tauri-apps/api/shell';
-import { getBucketRegion } from "@/cli-functions/getBucketRegion";
+import { getBucketRegion } from "@/cli-functions";
 import { useUserSessionStore } from "@/store/useSessionStore";
 import SyncBucketDialog from "../dialogs/SyncBucketDialog";
 import BucketDetailSheet from "../sheets/BucketDetailSheet";
@@ -35,6 +35,7 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                     <div className="text-xs p-2 font-semibold flex items-center "
                         onClick={(e) => {
                             e.stopPropagation();
+                            e.preventDefault();
                         }}
                     >
                         {bucket.Name}
@@ -46,7 +47,6 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                         onClick={(e) => {
                             e.stopPropagation();
                             e.preventDefault();
-                            console.log('click')
                         }}
                     >
                         <BucketDetailSheet bucket={bucket} />

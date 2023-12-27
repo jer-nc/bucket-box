@@ -1,4 +1,3 @@
-// bucketService.js
 import { getBucketContents } from '@/cli-functions';
 
 export const fetchSubfolderContents = async (bucketName: string, folderPath: string, profile: string, region: string) => {

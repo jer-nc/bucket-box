@@ -1,8 +1,10 @@
 import { Command } from '@tauri-apps/api/shell';
 
-export async function syncBucketContents(localPath: string, bucketName: string, profile: string, region: string, isFolder: boolean, updateLogCallback: (log: string) => void) {
+export async function uploadFilesFromDialog(localPath: string, bucketName: string, folderPath: string, profile: string, region: string, isFolder: boolean, updateLogCallback: (log: string) => void) {
     try {
-
+        const fileNameFromPath = localPath.split('\\').pop()?.split('/').pop();
+        
+        const s3Path = folderPath ? `s3://${bucketName}/${folderPath}/${fileNameFromPath}` : `s3://${bucketName}/${fileNameFromPath}`;
         if (region === null) {
             region = 'us-east-1';
         }
@@ -16,7 +18,7 @@ export async function syncBucketContents(localPath: string, bucketName: string, 
         }
 
 
-        const command = new Command('aws-cli', ["s3", syncCommand, `s3://${bucketName}`, localPath, "--region", region, "--profile", profile]);
+        const command = new Command('aws-cli', ["s3", syncCommand, localPath, s3Path, "--region", region, "--profile", profile]);
 
         console.log('command', command);
         let errorOutput = '';
