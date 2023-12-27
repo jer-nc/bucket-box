@@ -8,7 +8,7 @@ import { toast } from "@/components/ui/use-toast"
 import { getFileContent } from "@/cli-functions/getFileContent"
 import CodeBlock from "../codeblock/CodeBlock"
 import { useUserSessionStore } from "@/store/useSessionStore"
-
+import { http } from '@tauri-apps/api';
 
 interface ObjectDetail {
     file: File;
@@ -26,19 +26,22 @@ const ObjectDetailSheet = ({ file, bucketName, folderPath }: ObjectDetail) => {
     const isImageFile = /\.(jpg|jpeg|png|gif|svg|webp)$/i.test(file.name);
     const isCodeFile = codeExtensions.some(ext => file.name.endsWith(ext));
 
+    console.log('currentProfile', currentProfile)
+
     const handleGetObject = async () => {
         try {
             setLoading(true);
             const result = await getFileContent({ bucketName, folderPath, fileName: file.name, currentProfile });
             console.log(result);
-            if (result !== null) {
+            if (result) {
                 if (isCodeFile) {
-                    const response = await fetch(result);
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok.');
-                    }
-                    const data = await response.text();
-                    setFileText(data);
+                    const response = await http.fetch(result, {
+                        method: 'GET',
+                        body: http.Body.json({}), // Aquí es donde usas http.Body.json
+                        responseType: http.ResponseType.Text,
+                    });
+                    const data = await response.data;
+                    setFileText(data as string);
                 } else if (isImageFile) {
                     setContent(result);
                 }
