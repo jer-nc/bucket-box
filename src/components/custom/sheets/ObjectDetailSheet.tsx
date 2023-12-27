@@ -27,11 +27,9 @@ const ObjectDetailSheet = ({ file, bucketName, folderPath }: ObjectDetail) => {
 
 
     const { data, isLoading, isError, error, isSuccess } = useQuery({
-        queryKey: ['getFileContent', bucketName, folderPath, file.name, currentProfile],
+        queryKey: ['fileContentDetail', bucketName, folderPath, file.name, currentProfile],
         queryFn: () => getFileContent({ bucketName, folderPath, fileName: file.name, currentProfile }),
     });
-
-    console.log('data', data)
 
     if (isError) {
         toast({
