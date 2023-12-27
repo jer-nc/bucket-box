@@ -29,6 +29,9 @@ const ObjectDetailSheet = ({ file, bucketName, folderPath }: ObjectDetail) => {
     const { data, isLoading, isError, error, isSuccess } = useQuery({
         queryKey: ['fileContentDetail', bucketName, folderPath, file.name, currentProfile],
         queryFn: () => getFileContent({ bucketName, folderPath, fileName: file.name, currentProfile }),
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
+        refetchOnReconnect: false,
     });
 
     if (isError) {

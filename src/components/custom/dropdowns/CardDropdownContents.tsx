@@ -17,12 +17,12 @@ export interface CardDropdownProps {
 const CardDropdownContents = ({ file }: CardDropdownProps) => {
     const { currentProfile } = useUserSessionStore();
     const { pathname: currentPathname } = useLocation();
-
     // console.log('file t', file)
     const { bucketName, folderPath } = extractBucketAndFolder(currentPathname);
 
     // console.log('bucketName', bucketName)
     // console.log('folderPath', folderPath)
+
 
     return (
         <>
@@ -58,7 +58,7 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
                                     console.log('click')
                                 }}
                             >
-                                <ObjectDetailSheet  bucketName={bucketName} folderPath={folderPath} file={file} />
+                                <ObjectDetailSheet bucketName={bucketName} folderPath={folderPath} file={file} />
                             </DropdownMenuItem>
                         )
                     }
