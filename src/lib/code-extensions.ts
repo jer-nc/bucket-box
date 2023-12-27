@@ -1,0 +1,1 @@
+export const codeExtensions = ['.js', '.py', '.java', '.json', '.ts', '.rs', '.go', '.php', '.c', '.cpp', '.h', '.hpp', '.cs', '.html', '.xml', '.yml', '.yaml', '.sh', '.bat', '.ps1', '.sql', '.rb', '.pl', '.lua', '.swift', '.kt', '.ktm', '.kts', '.clj', '.cljs', '.cljc', '.edn', '.scala', '.groovy'];

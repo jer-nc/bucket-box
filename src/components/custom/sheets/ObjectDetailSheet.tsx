@@ -9,6 +9,8 @@ import { getFileContent } from "@/cli-functions/getFileContent"
 import CodeBlock from "../codeblock/CodeBlock"
 import { useUserSessionStore } from "@/store/useSessionStore"
 import { http } from '@tauri-apps/api';
+import { codeExtensions } from "@/lib/code-extensions"
+import { useQuery } from "@tanstack/react-query"
 
 interface ObjectDetail {
     file: File;
@@ -20,54 +22,47 @@ const ObjectDetailSheet = ({ file, bucketName, folderPath }: ObjectDetail) => {
     const [content, setContent] = useState('')
     const [fileText, setFileText] = useState('')
     const { currentProfile } = useUserSessionStore();
-    const codeExtensions = ['.js', '.py', '.java', '.json', '.ts', '.rs', '.go', '.php', '.c', '.cpp', '.h', '.hpp', '.cs', '.html', '.xml', '.yml', '.yaml', '.sh', '.bat', '.ps1', '.sql', '.rb', '.pl', '.lua', '.swift', '.kt', '.ktm', '.kts', '.clj', '.cljs', '.cljc', '.edn', '.scala', '.groovy'];
-
-    const [loading, setLoading] = useState(false);
     const isImageFile = /\.(jpg|jpeg|png|gif|svg|webp)$/i.test(file.name);
     const isCodeFile = codeExtensions.some(ext => file.name.endsWith(ext));
 
-    console.log('currentProfile', currentProfile)
 
-    const handleGetObject = async () => {
-        try {
-            setLoading(true);
-            const result = await getFileContent({ bucketName, folderPath, fileName: file.name, currentProfile });
-            console.log(result);
-            if (result) {
-                if (isCodeFile) {
-                    const response = await http.fetch(result, {
-                        method: 'GET',
-                        body: http.Body.json({}), // Aquí es donde usas http.Body.json
-                        responseType: http.ResponseType.Text,
-                    });
-                    const data = await response.data;
-                    setFileText(data as string);
-                } else if (isImageFile) {
-                    setContent(result);
-                }
-            } else {
-                setContent('');
-            }
+    const { data, isLoading, isError, error, isSuccess } = useQuery({
+        queryKey: ['getFileContent', bucketName, folderPath, file.name, currentProfile],
+        queryFn: () => getFileContent({ bucketName, folderPath, fileName: file.name, currentProfile }),
+    });
 
-        } catch (error) {
-            setLoading(false);
-            console.error(error);
-            if (error instanceof Error) {
-                toast({
-                    title: 'Error',
-                    description: error.message,
-                    variant: 'destructive',
-                    className: 'text-xs',
-                });
-            }
-        } finally {
-            setLoading(false);
-        }
+    console.log('data', data)
+
+    if (isError) {
+        toast({
+            title: 'Error',
+            description: error.message,
+            variant: 'destructive',
+            className: 'text-xs',
+        })
     }
 
+
     useEffect(() => {
-        handleGetObject();
-    }, []);
+        if (isSuccess) {
+            const fetchData = async () => {
+                const response = await http.fetch(data!, {
+                    method: 'GET',
+                    body: http.Body.json({}),
+                    responseType: http.ResponseType.Text,
+                });
+                const textCode = await response.data;
+                setFileText(textCode as string);
+            };
+
+            if (isCodeFile) {
+                fetchData();
+            } else if (isImageFile) {
+                setContent(data as string);
+            }
+        }
+    }, [isSuccess, data, isCodeFile, isImageFile]);
+
 
 
     return (
@@ -107,7 +102,7 @@ const ObjectDetailSheet = ({ file, bucketName, folderPath }: ObjectDetail) => {
                             )
                         }
                         {
-                            loading ? (
+                            isLoading ? (
                                 <SheetSkeleton />
                             ) : (
                                 <ScrollArea className="h-[75vh] pt-2">
