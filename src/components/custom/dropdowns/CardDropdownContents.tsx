@@ -33,6 +33,7 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
                         variant='ghost'
                         onClick={(e) => {
                             e.stopPropagation();
+                            e.preventDefault();
                             console.log('click')
                         }}
                     >

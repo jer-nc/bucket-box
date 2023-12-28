@@ -24,7 +24,7 @@ const ObjectDetailSheet = ({ file, bucketName, folderPath }: ObjectDetail) => {
     const { currentProfile } = useUserSessionStore();
     const isImageFile = /\.(jpg|jpeg|png|gif|svg|webp)$/i.test(file.name);
     const isCodeFile = codeExtensions.some(ext => file.name.endsWith(ext));
-
+    const [isClicked, setIsClicked] = useState(false);
 
     const { data, isLoading, isError, error, isSuccess } = useQuery({
         queryKey: ['fileContentDetail', bucketName, folderPath, file.name, currentProfile],
@@ -32,6 +32,7 @@ const ObjectDetailSheet = ({ file, bucketName, folderPath }: ObjectDetail) => {
         refetchOnWindowFocus: false,
         refetchOnMount: false,
         refetchOnReconnect: false,
+        enabled: isClicked,
     });
 
     if (isError) {
@@ -39,7 +40,6 @@ const ObjectDetailSheet = ({ file, bucketName, folderPath }: ObjectDetail) => {
             title: 'Error',
             description: error.message,
             variant: 'destructive',
-            className: 'text-xs',
         })
     }
 
@@ -68,9 +68,13 @@ const ObjectDetailSheet = ({ file, bucketName, folderPath }: ObjectDetail) => {
 
     return (
         <>
-            <Sheet>
+            <Sheet defaultOpen={false}>
                 <SheetTrigger className="flex items-center w-full cursor-default">
-                    <div className="flex items-center w-full">
+                    <div className="flex items-center w-full" onClick={
+                        () => {
+                            setIsClicked(!isClicked)
+                        }
+                    }>
                         <Eye size={16} className="mr-2" />
                         Details
                     </div>
