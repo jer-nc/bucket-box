@@ -1,4 +1,4 @@
-import { Plus, Settings, User } from 'lucide-react'
+import { Info, Plus } from 'lucide-react'
 import { ToggleThemeButton } from './ToggleThemeButton'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button';
@@ -6,8 +6,6 @@ import { Button } from '@/components/ui/button';
 const Sidebar = () => {
   const { pathname: currentPathname } = useLocation()
   const navigate = useNavigate()
-
-  // TODO: Create component for / icon 
 
   const routes = [
     {
@@ -25,20 +23,10 @@ const Sidebar = () => {
       path: '/create-bucket',
       icon: <Plus size={18} />
     },
-    // {
-    //   name: 'Create Bucket',
-    //   path: '/buckets/test/test2/test.txt',
-    //   icon: <Plus size={18} />
-    // },
     {
-      name: 'Settings',
-      path: '/settings',
-      icon: <Settings size={18} />
-    },
-    {
-      name: 'Profile',
-      path: '/profile',
-      icon: <User size={18} />
+      name: 'About',
+      path: '/about',
+      icon: <Info size={18} />
     }
   ]
 

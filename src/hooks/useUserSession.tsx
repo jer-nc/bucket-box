@@ -1,5 +1,4 @@
-import  { useEffect } from 'react';
-
+import { useEffect } from 'react';
 import { useUserSessionStore } from '@/store/useSessionStore';
 import { getAllProfiles } from '@/cli-functions/getAllProfiles';
 
@@ -9,10 +8,13 @@ function useUserSession() {
 
     async function getCurrentProfile() {
         try {
-            const fetchedProfiles = await getAllProfiles();
-          // console.log('Fetched Profiles', fetchedProfiles);
-            setProfiles(fetchedProfiles);
-            return fetchedProfiles;
+            const fetchedProfiles = await getAllProfiles() || [];
+            if (fetchedProfiles && fetchedProfiles.length === 0) {
+                return [];
+            } else {
+                setProfiles(Array.isArray(fetchedProfiles) ? fetchedProfiles : [fetchedProfiles]);
+                return fetchedProfiles;
+            }
         } catch (error) {
             console.error("Error fetching profiles:", error);
             return [];
@@ -27,7 +29,6 @@ function useUserSession() {
                 setCurrentProfile(localStorageProfile);
             } else {
                 getCurrentProfile().then((fetchedProfiles) => {
-                    // Setting default profile if fetchedProfiles is empty
                     const defaultProfile = fetchedProfiles.length > 0 ? fetchedProfiles[0] : "AWS Profile";
                     setCurrentProfile(defaultProfile);
                     localStorage.setItem("aws-profile", defaultProfile);
@@ -35,18 +36,13 @@ function useUserSession() {
             }
         };
 
-        
+
         getAllProfiles().then((fetchedProfiles) => {
-            setProfiles(fetchedProfiles);
+            setProfiles(Array.isArray(fetchedProfiles) ? fetchedProfiles : fetchedProfiles ? [fetchedProfiles] : []);
         });
-        
+
         setProfileFromLocalStorage();
     }, []);
-    
-    // const changeProfile = (selectedProfile: string) => {
-    //     setCurrentProfile(selectedProfile);
-    //     localStorage.setItem("aws-profile", selectedProfile);
-    // };
 
 
     return {
