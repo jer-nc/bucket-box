@@ -1,7 +1,14 @@
 
 # Bucket Box
 
-Bucket Box is a lightweight experimental desktop application designed for managing AWS S3 buckets. This project utilizes AWS CLI v2 to execute commands for interacting with AWS services. Please note that it has primarily been tested on Windows OS.
+Bucket Box is a lightweight experimental desktop application designed for managing AWS S3 buckets. This project utilizes AWS CLI v2 to execute commands for interacting with AWS services. 
+
+> [!NOTE]
+> Please note that it has primarily been tested on Windows OS.
+
+> [!CAUTION]
+> This project is experimental and may contain bugs and/or incomplete features.
+
 
 
 | Bucket List                              | New Bucket                             |
