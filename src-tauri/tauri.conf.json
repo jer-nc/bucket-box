@@ -17,7 +17,6 @@
         "all": true,
         "request": true,
         "scope": [
-          "http://localhost:3000/*",
           "https://*.s3.*.amazonaws.com/**"
         ]
       },

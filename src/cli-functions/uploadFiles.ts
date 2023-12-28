@@ -21,7 +21,7 @@ export async function uploadFiles({ bucketName, folderPath, profile, files }: { 
         });
         try {
             const child = await command.execute();
-            const str = child.stdout.toString();
+            // const str = child.stdout.toString();
           // console.log(str);
             // const strParse = JSON.parse(str);
             results.push(child);
