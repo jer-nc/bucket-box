@@ -1,8 +1,8 @@
 [package]
 name = "app"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "Bucket Box is a desktop application that allows you to manage your AWS S3 buckets and objects."
+authors = ["jer-nc"]
 license = ""
 repository = ""
 default-run = "app"
