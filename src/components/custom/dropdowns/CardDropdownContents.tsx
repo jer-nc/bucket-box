@@ -9,6 +9,7 @@ import SyncBucketObjectsDialog from "../dialogs/SyncBucketObjectsDialog";
 import { File } from "@/lib/app";
 import { extractBucketAndFolder } from "@/lib/utils";
 import { useLocation } from "react-router-dom";
+import DeleteObjectsDialog from "../dialogs/DeleteObjectsDialog";
 
 export interface CardDropdownProps {
     file: File;
@@ -70,6 +71,17 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
                         }}
                     >
                         <SyncBucketObjectsDialog file={file} />
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+
+                        className=" bg-destructive/40 hover:bg-destructive focus:bg-destructive text-white"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                        }}
+                    >
+                        {/* <SyncBucketObjectsDialog file={file} /> */}
+                        <DeleteObjectsDialog bucketName={bucketName} folderPath={folderPath} currentProfile={currentProfile} file={file} />
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
