@@ -1,23 +1,28 @@
 import { Command } from '@tauri-apps/api/shell';
+import { getBucketRegion } from '.';
 
-export async function getBucketContents(bucket: string, profile: string, region: string,prefix?: string) {
+export async function getBucketContents(bucket: string, profile: string, region?: string, prefix?: string) {
     try {
+        let regionFn: string;
 
-        console.log('region', region);
-        // Si la región es 'us-east-1', se usa el valor predeterminado
-        if (region === null) {
-            region = 'us-east-1';
+        if (region) {
+            regionFn = region;
+        } else {
+            regionFn = await getBucketRegion(bucket, profile) || 'us-east-1';
         }
 
-        console.log('region 2', region);
+        // if (regionFn === null) {
+        //     regionFn = 'us-east-1';
+        // }
+
         let bucketPath = 's3://' + bucket;
+
         if (prefix) {
             bucketPath += '/' + prefix + '/';
         }
 
-        const command = new Command('aws-cli', ["s3", "ls", bucketPath, "--region", region, "--output", "json", "--profile", profile]);
+        const command = new Command('aws-cli', ["s3", "ls", bucketPath, "--region", regionFn, "--output", "json", "--profile", profile]);
 
-        console.log('command', command);
         let errorOutput = '';
 
         command.stderr.on('data', data => {
@@ -29,27 +34,21 @@ export async function getBucketContents(bucket: string, profile: string, region:
         if (child.code !== 0) {
             throw new Error(`Command failed with code ${child.code}. Error: ${errorOutput}`);
         }
-        console.log('child', child);
 
         const str = child.stdout.toString();
-        // Dividir las líneas de texto en un array
         const lines = str.trim().split('\n');
-        // Aplicar la transformación a cada línea antes de procesarla
         const processedLines = lines.map(line => line.trim().split(/\s+/));
 
-        // Filtrar y mapear las líneas para crear objetos JSON según tu lógica
         const contents = processedLines.map((elements: string[]) => {
 
             if (elements.length === 2 && elements[0] === 'PRE') {
-                // Es un directorio
                 return {
                     type: 'folder',
-                    name: elements[1].slice(0, -1), // Eliminar la barra diagonal final del nombre del directorio
+                    name: elements[1].slice(0, -1),
                     size: null,
                     lastModified: null,
                 };
             } else if (elements.length >= 4) {
-                // Es un archivo
                 const isFile = elements[0].match(/^\d{4}-\d{2}-\d{2}$/) !== null;
                 const sizeIndex = isFile ? 2 : 3;
                 const lastIndex = elements.length - 1;
@@ -67,12 +66,9 @@ export async function getBucketContents(bucket: string, profile: string, region:
                     lastModified: isFile ? lastModified : null,
                 };
             } else {
-                // Otro tipo de línea que no corresponde a un archivo ni a un directorio
                 return null;
             }
         }).filter(Boolean);
-
-        console.log('contents', contents)
 
         return contents;
 

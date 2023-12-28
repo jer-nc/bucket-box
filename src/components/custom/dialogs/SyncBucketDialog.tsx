@@ -12,7 +12,7 @@ import { toast } from "@/components/ui/use-toast";
 
 const SyncBucketDialog = ({ bucket }: CardDropdownProps) => {
     const [selectedPath, setSelectedPath] = useState<string | null>(null);
-    const [responseLog, setResponseLog] = useState<string>(); 
+    const [responseLog, setResponseLog] = useState<React.ReactNode[] | string>();
     const { currentProfile } = useUserSessionStore();
     const [loading, setLoading] = useState(false);
 
@@ -26,7 +26,7 @@ const SyncBucketDialog = ({ bucket }: CardDropdownProps) => {
             setSelectedPath(null);
             setResponseLog("")
         } else {
-            console.log(selected);
+          // console.log(selected);
             setSelectedPath(selected as string);
         }
     }
@@ -36,7 +36,13 @@ const SyncBucketDialog = ({ bucket }: CardDropdownProps) => {
 
         try {
             const region = await getBucketRegion(bucket.Name, currentProfile);
-            const response = await syncBucketContents(selectedPath!, bucket.Name, currentProfile, region, true);
+            const response = await syncBucketContents(selectedPath!, bucket.Name, currentProfile, region, true,
+                (log: string) => {
+                    setResponseLog(prevLog =>
+                        prevLog ? prevLog + '\n' + log : log
+                    );
+                }
+            );
             if (response && response?.length > 0) {
                 toast({
                     title: 'Success',
@@ -44,7 +50,13 @@ const SyncBucketDialog = ({ bucket }: CardDropdownProps) => {
                     variant: 'default',
                     className: 'text-xs',
                 });
-                setResponseLog(response);
+                const responseMessages = response.split('\n').map((message, index) => (
+                    <p key={index} className="text-xs text-muted-foreground font-normal">
+                        {message}
+                    </p>
+                ));
+
+                setResponseLog(responseMessages);
             } else {
                 setResponseLog("No files downloaded.");
             }
@@ -74,7 +86,7 @@ const SyncBucketDialog = ({ bucket }: CardDropdownProps) => {
                 <DialogHeader>
                     <DialogTitle>Sync Bucket Contents Locally</DialogTitle>
                     <DialogDescription className="py-4">
-                        Choose a local folder to sync the contents of <span className="font-semibold text-emerald-500">{bucket.Name}</span> bucket. 
+                        Choose a local folder to sync the contents of <span className="font-semibold text-emerald-500">{bucket.Name}</span> bucket.
                         This will download all the files in the bucket to the local folder.
                     </DialogDescription>
 
@@ -112,7 +124,7 @@ const SyncBucketDialog = ({ bucket }: CardDropdownProps) => {
                                         Sync
                                     </div>
                                 )
-                            
+
                             }
                         </Button>
                     </DialogFooter>

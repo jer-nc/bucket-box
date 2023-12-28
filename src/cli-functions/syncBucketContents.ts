@@ -1,9 +1,8 @@
 import { Command } from '@tauri-apps/api/shell';
 
-export async function syncBucketContents(localPath: string, bucketName: string, profile: string, region: string, isFolder: boolean) {
+export async function syncBucketContents(localPath: string, bucketName: string, profile: string, region: string, isFolder: boolean, updateLogCallback: (log: string) => void) {
     try {
 
-        // Si la región es 'us-east-1', se usa el valor predeterminado
         if (region === null) {
             region = 'us-east-1';
         }
@@ -19,7 +18,7 @@ export async function syncBucketContents(localPath: string, bucketName: string, 
 
         const command = new Command('aws-cli', ["s3", syncCommand, `s3://${bucketName}`, localPath, "--region", region, "--profile", profile]);
 
-        console.log('command', command);
+      // console.log('command', command);
         let errorOutput = '';
 
         command.stderr.on('data', data => {
@@ -27,8 +26,9 @@ export async function syncBucketContents(localPath: string, bucketName: string, 
         });
 
         command.stdout.on('data', data => {
-            // Esta línea se ejecutará cada vez que el comando escriba algo en su salida estándar
-            console.log('Archivo descargado:', data.toString());
+            const message = data.toString();
+          // console.log('Files Downloaded:', message);
+            updateLogCallback(message);
         });
 
         const child = await command.execute();
@@ -36,7 +36,7 @@ export async function syncBucketContents(localPath: string, bucketName: string, 
         if (child.code !== 0) {
             throw new Error(`Command failed with code ${child.code}. Error: ${errorOutput}`);
         }
-        console.log('child', child);
+      // console.log('child', child);
 
         const str = child.stdout.toString();
 

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { MoreVertical, PanelTop, Trash2 } from "lucide-react";
 import { open } from '@tauri-apps/api/shell';
-import { getBucketRegion } from "@/cli-functions/getBucketRegion";
+import { getBucketRegion } from "@/cli-functions";
 import { useUserSessionStore } from "@/store/useSessionStore";
 import SyncBucketDialog from "../dialogs/SyncBucketDialog";
 import BucketDetailSheet from "../sheets/BucketDetailSheet";
@@ -25,7 +25,6 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                         variant='ghost'
                         onClick={(e) => {
                             e.stopPropagation();
-                            console.log('click')
                         }}
                     >
                         <MoreVertical size={16} />
@@ -35,6 +34,7 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                     <div className="text-xs p-2 font-semibold flex items-center "
                         onClick={(e) => {
                             e.stopPropagation();
+                            e.preventDefault();
                         }}
                     >
                         {bucket.Name}
@@ -46,7 +46,6 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                         onClick={(e) => {
                             e.stopPropagation();
                             e.preventDefault();
-                            console.log('click')
                         }}
                     >
                         <BucketDetailSheet bucket={bucket} />
@@ -64,7 +63,7 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                         onClick={async (e) => {
                             e.stopPropagation();
                             let bucketRegion = await getBucketRegion(bucket.Name, currentProfile);
-                            console.log('bucketRegion', bucketRegion)
+                          // console.log('bucketRegion', bucketRegion)
                             if (bucketRegion === null) {
                                 bucketRegion = 'us-east-1';
                             }
@@ -75,11 +74,10 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                         Open in AWS Console
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                        className="text-destructive"
+                        className="bg-destructive/40 hover:bg-destructive focus:bg-destructive text-white"
                         onClick={async (e) => {
                             e.stopPropagation();
                             let bucketRegion = await getBucketRegion(bucket.Name, currentProfile);
-                            console.log('bucketRegion', bucketRegion)
                             if (bucketRegion === null) {
                                 bucketRegion = 'us-east-1';
                             }

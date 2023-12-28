@@ -1,9 +1,8 @@
 import { Command } from '@tauri-apps/api/shell';
-import { AWS_CLI_COMMANDS } from '@/lib/aws-commands';
 
 export async function listAllBuckets(profile: string) {
     try {
-        const command = new Command('aws-cli', AWS_CLI_COMMANDS(profile).S3_LIST_BUCKETS_BY_NAME);
+        const command = new Command('aws-cli', ["s3api", "list-buckets", "--output", "json", "--profile", profile]);
 
         let errorOutput = '';
 
@@ -13,7 +12,7 @@ export async function listAllBuckets(profile: string) {
 
         const child = await command.execute();
 
-        console.log('child', child)
+      // console.log('child', child)
 
         if (child.code !== 0) {
             throw new Error(`Command failed with code ${child.code}. Error: ${errorOutput}`);
@@ -21,7 +20,7 @@ export async function listAllBuckets(profile: string) {
 
         const str = child.stdout.toString();
         const strParse = JSON.parse(str);
-        console.log('strParse', strParse)
+      // console.log('strParse', strParse)
 
         // if (!strParse.length) {
         //     throw new Error('No buckets found');

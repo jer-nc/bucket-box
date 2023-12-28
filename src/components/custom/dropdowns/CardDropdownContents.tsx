@@ -1,12 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { MoreVertical, PanelTop, Trash2 } from "lucide-react";
+import { MoreVertical, PanelTop } from "lucide-react";
 import { open } from '@tauri-apps/api/shell';
 import { getBucketRegion } from "@/cli-functions/getBucketRegion";
 import { useUserSessionStore } from "@/store/useSessionStore";
 import ObjectDetailSheet from "../sheets/ObjectDetailSheet";
 import SyncBucketObjectsDialog from "../dialogs/SyncBucketObjectsDialog";
 import { File } from "@/lib/app";
+import { extractBucketAndFolder } from "@/lib/utils";
+import { useLocation } from "react-router-dom";
+import DeleteObjectsDialog from "../dialogs/DeleteObjectsDialog";
+import PresignedUrlDialog from "../dialogs/PresignedUrlDialog";
 
 export interface CardDropdownProps {
     file: File;
@@ -14,8 +18,14 @@ export interface CardDropdownProps {
 
 const CardDropdownContents = ({ file }: CardDropdownProps) => {
     const { currentProfile } = useUserSessionStore();
+    const { pathname: currentPathname } = useLocation();
+    // console.log('file t', file)
+    const { bucketName, folderPath } = extractBucketAndFolder(currentPathname);
 
-    console.log('file', file)
+    // console.log('bucketName', bucketName)
+    // console.log('folderPath', folderPath)
+
+
     return (
         <>
             <DropdownMenu>
@@ -25,14 +35,15 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
                         variant='ghost'
                         onClick={(e) => {
                             e.stopPropagation();
-                            console.log('click')
+                            e.preventDefault();
+                          // console.log('click')
                         }}
                     >
                         <MoreVertical size={16} />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start">
-                    <div className="text-xs p-2 font-semibold flex items-center "
+                    <div className="text-xs p-2 font-semibold flex items-center"
                         onClick={(e) => {
                             e.stopPropagation();
                         }}
@@ -41,16 +52,32 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
                     </div>
 
                     <DropdownMenuSeparator />
-
-                    <DropdownMenuItem
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            e.preventDefault();
-                            console.log('click')
-                        }}
-                    >
-                        <ObjectDetailSheet file={file} />
-                    </DropdownMenuItem>
+                    {
+                        file.type === 'file' && (
+                            <DropdownMenuItem
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                  // console.log('click')
+                                }}
+                            >
+                                <ObjectDetailSheet bucketName={bucketName} folderPath={folderPath} file={file} />
+                            </DropdownMenuItem>
+                        )
+                    }
+                    {
+                        file.type === 'file' && (
+                            <DropdownMenuItem
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                  // console.log('click')
+                                }}
+                            >
+                                <PresignedUrlDialog bucketName={bucketName} folderPath={folderPath} currentProfile={currentProfile} file={file} />
+                            </DropdownMenuItem>
+                        )
+                    }
                     <DropdownMenuItem
                         onClick={(e) => {
                             e.stopPropagation();
@@ -59,36 +86,48 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
                     >
                         <SyncBucketObjectsDialog file={file} />
                     </DropdownMenuItem>
+                    <DropdownMenuItem
+
+                        className="bg-destructive/80 hover:bg-destructive focus:bg-destructive text-primary"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                        }}
+                    >
+                        {/* <SyncBucketObjectsDialog file={file} /> */}
+                        <DeleteObjectsDialog bucketName={bucketName} folderPath={folderPath} currentProfile={currentProfile} file={file} />
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                         onClick={async (e) => {
                             e.stopPropagation();
-                            let bucketRegion = await getBucketRegion(file.name, currentProfile);
-                            console.log('bucketRegion', bucketRegion)
+                            let bucketRegion = await getBucketRegion(bucketName, currentProfile);
+                          // console.log('bucketRegion', bucketRegion)
                             if (bucketRegion === null) {
                                 bucketRegion = 'us-east-1';
                             }
-                            open("https://console.aws.amazon.com/s3/buckets/" + `${file.name}` + "/?region=" + `${bucketRegion}` + "&tab=overview")
+                            // replace backslashes with %5C for the url
+                            const slashFilename = file.name.replace(/\\/g, '%5C');
+
+                            if (file.type === 'folder') {
+                                if (folderPath !== '') {
+                                    open("https://console.aws.amazon.com/s3/buckets/" + `${bucketName}` + "/?region=" + `${bucketRegion}` + `&prefix=${folderPath}/${slashFilename}/`)
+                                } else {
+                                    open("https://console.aws.amazon.com/s3/buckets/" + `${bucketName}` + "/?region=" + `${bucketRegion}` + `&prefix=${slashFilename}/`)
+                                }
+                            } else {
+                                if (folderPath !== '') {
+                                    open("https://console.aws.amazon.com/s3/buckets/" + `${bucketName}` + "/?region=" + `${bucketRegion}` + `&prefix=${folderPath}/${slashFilename}`)
+                                } else {
+                                    open("https://console.aws.amazon.com/s3/buckets/" + `${bucketName}` + "/?region=" + `${bucketRegion}` + `&prefix=${slashFilename}`)
+                                }
+                            }
                         }}
                     >
                         <PanelTop size={16} className="mr-2" />
                         Open in AWS Console
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                        className="text-destructive"
-                        onClick={async (e) => {
-                            e.stopPropagation();
-                            let bucketRegion = await getBucketRegion(file.name, currentProfile);
-                            console.log('bucketRegion', bucketRegion)
-                            if (bucketRegion === null) {
-                                bucketRegion = 'us-east-1';
-                            }
-                            open("https://console.aws.amazon.com/s3/bucket/" + `${file.name}` + "/delete?region=" + `${bucketRegion}`)
-                        }}
-                    >
-                        <Trash2 size={16} className="mr-2" />
-                        Delete in AWS Console
-                    </DropdownMenuItem>
+
                 </DropdownMenuContent>
             </DropdownMenu>
         </>

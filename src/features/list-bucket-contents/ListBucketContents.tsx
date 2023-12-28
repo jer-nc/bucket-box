@@ -1,69 +1,64 @@
 import { getBucketContents, getBucketRegion } from '@/cli-functions';
 import CardDropdownContents from '@/components/custom/dropdowns/CardDropdownContents'
+import IconMap from '@/components/custom/icons/IconMap';
 import Spinner from '@/components/custom/loaders/Spinner'
 import { Card } from '@/components/ui/card'
-import { toast } from '@/components/ui/use-toast'
+import { toast } from '@/components/ui/use-toast';
 import { File } from '@/lib/app'
-import { useUserSessionStore } from '@/store/useSessionStore'
+import { getFileExtension } from '@/lib/utils';
+import { useBucketStore } from '@/store/useBucketStore';
+import { useQuery } from '@tanstack/react-query';
 import { File as FileIcon, Folder } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom'
 
+interface ListBucketContentsProps {
+  bucketName: string;
+  profile: string;
+}
 
-const ListBucketContents = () => {
-  const { pathname: currentPathname } = useLocation()
-  const { profiles, currentProfile } = useUserSessionStore();
-  const [loading, setLoading] = useState(true);
-  const [bucketContents, setBucketContents] = useState<File[]>([]);
+
+const ListBucketContents = ({ bucketName, profile }: ListBucketContentsProps) => {
+  const { pathname: currentPathname } = useLocation();
   const navigate = useNavigate();
+  const { setCurrentBucketRegion, isRefetching } = useBucketStore();
 
+// console.log('isRefetching', isRefetching)
 
-  console.log('currentPathname', currentPathname)
+  const { data, isLoading, isError, error, isSuccess } = useQuery({
+    queryKey: ['bucketData', profile, bucketName],
+    queryFn: () => getBucketContents(bucketName, profile),
+    retry: 1,
+  });
 
-  const handleGetBucketContents = async () => {
-    try {
-      setLoading(true);
-      const profile = localStorage.getItem('aws-profile') || '';
-      const folderName = currentPathname.replace('/buckets/', '');
-      const bucketLocation = await getBucketRegion(folderName, profile);
-
-      console.log('bucketLocation', bucketLocation)
-      const response = await getBucketContents(folderName, profile, bucketLocation);
-      console.log('bucketContents', response)
-      if (response) {
-        setBucketContents(response as File[]);
-      } else {
-        setBucketContents([]);
-      }
-    } catch (error) {
-      console.error(error);
-      setBucketContents([]);
-      if (error instanceof Error) {
-        toast({
-          title: 'Error',
-          description: error.message,
-          variant: 'destructive',
-          className: 'text-xs',
-        });
-      }
-    } finally {
-      setLoading(false);
-    }
+  if (isError) {
+    toast({
+      title: 'Error',
+      description: error.message,
+      variant: 'destructive',
+      className: 'text-xs',
+    })
   }
 
-  // console.log('bucketContents', bucketContents)
-
   useEffect(() => {
-    if (profiles.length > 0 && currentPathname !== '/') {
-      handleGetBucketContents();
-    }
-  }, [profiles, currentProfile, currentPathname]);
+    const getCurrentRegion = async () => {
+      try {
+        const currentRegion = await getBucketRegion(bucketName, profile);
+        setCurrentBucketRegion(currentRegion);
+      // console.log('currentRegion', currentRegion);
+      } catch (err) {
+        console.error('Error fetching region:', err);
+      }
+    };
+    getCurrentRegion();
+  }, [bucketName, profile, isSuccess, setCurrentBucketRegion]);
+// console.log('data', data)
 
   const handleNavigate = (prefix: string) => {
-    console.log('prefix', prefix)
-    const folderName = currentPathname.replace('/buckets/', '');
-    const newPathname = `/buckets/${folderName}/${prefix}`
-    console.log('newPathname', newPathname)
+  // console.log('prefix', prefix)
+    const bucketName = currentPathname.replace('/buckets/', '');
+    const newPathname = `/buckets/${bucketName}/${prefix}`
+  // console.log('newPathname', newPathname)
     navigate(newPathname);
   };
 
@@ -75,20 +70,26 @@ const ListBucketContents = () => {
     }
   };
 
+  const getFileIcon = (fileName: string) => {
+    const extension = getFileExtension(fileName);
+    return IconMap[extension] || <FileIcon size={16} />;
+  };
+
+
   return (
     <div className='relative'>
       <div className='py-4'>
-        {loading ? (
+        {isLoading || isRefetching ? (
           <div style={{ height: 'calc(100vh - 14.5rem)' }} className='mx-auto text-center flex flex-col justify-center'>
             <Spinner />
           </div>
-        ) : bucketContents.length === 0 ? (
+        ) : (data as Array<unknown>)?.length === 0 ? (
           <div style={{ height: 'calc(100vh - 14.5rem)' }} className='mx-auto text-center flex flex-col justify-center'>
             <p className='text-sm truncate mx-auto max-w-[10rem] text-muted-foreground'>No files found</p>
           </div>
         ) : (
           <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4'>
-            {bucketContents.map((file: File, index: number) => (
+            {(data as Array<File>)?.map((file: File, index: number) => (
               <Card onClick={() => handleCardClick(file)}
                 title={file.name} key={index}
                 className={`p-4 flex items-center justify-between gap-4 hover:bg-secondary/30 rounded-md ${file.type !== 'folder' ? 'cursor-default' : 'cursor-pointer'}`}>
@@ -97,7 +98,7 @@ const ListBucketContents = () => {
                     file.type === 'folder' ? (
                       <Folder fill='currentColor' size={16} />
                     ) : (
-                      <FileIcon size={16} />
+                      getFileIcon(file.name)
                     )
                   }
                   <p className='text-sm truncate max-w-[10rem]'>{file.name}</p>

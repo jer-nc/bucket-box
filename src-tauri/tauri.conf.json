@@ -16,21 +16,43 @@
       "http": {
         "all": true,
         "request": true,
-        "scope": ["http://localhost:3000/*"]
+        "scope": [
+          "https://*.s3.*.amazonaws.com/**"
+        ]
+      },
+      "fs": {
+        "all": true,
+        "readFile": true,
+        "writeFile": true,
+        "readDir": true,
+        "copyFile": true,
+        "createDir": true,
+        "removeDir": true,
+        "removeFile": true,
+        "renameFile": true,
+        "exists": true,
+        "scope": [
+          "**"
+        ]
       },
       "dialog": {
         "all": true,
-        "ask": true, 
-        "confirm": true, 
+        "ask": true,
+        "confirm": true,
         "message": true,
-        "open": true, 
+        "open": true,
         "save": true
       },
+      "clipboard": {
+        "all": true,
+        "writeText": true,
+        "readText": true
+      },
       "shell": {
-        "all": true, 
+        "all": true,
         "execute": true,
-        "sidecar": true, 
-        "open": true ,
+        "sidecar": true,
+        "open": true,
         "scope": [
           {
             "name": "aws-cli",
@@ -40,10 +62,12 @@
           {
             "name": "bash",
             "cmd": "aws",
-            "args": ["configure", "list"]
+            "args": [
+              "configure",
+              "list"
+            ]
           }
         ]
-
       }
     },
     "bundle": {
