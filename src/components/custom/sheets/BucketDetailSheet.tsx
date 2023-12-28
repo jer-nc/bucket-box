@@ -8,16 +8,19 @@ import SheetSkeleton from "../skeletons/SheetSkeleton"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useQuery } from "@tanstack/react-query"
 import CodeBlock from "../codeblock/CodeBlock"
+import { useState } from "react"
 
 
 const BucketDetailSheet = ({ bucket }: CardDropdownProps) => {
     const { currentProfile } = useUserSessionStore();
+    const [isClicked, setIsClicked] = useState(false);
 
 
     const { data, isLoading, isError, error } = useQuery({
         queryKey: ['bucketDetail', bucket.Name, currentProfile],
         queryFn: () => getBucketDetails(bucket.Name, currentProfile),
         retry: 1,
+        enabled: isClicked,
     });
 
     if (isError) {
@@ -35,7 +38,7 @@ const BucketDetailSheet = ({ bucket }: CardDropdownProps) => {
         <>
             <Sheet>
                 <SheetTrigger className="flex items-center w-full cursor-default">
-                    <div className="flex items-center w-full">
+                    <div className="flex items-center w-full" onClick={() => setIsClicked(true)}>
                         <Eye size={16} className="mr-2" />
                         Details
                     </div>

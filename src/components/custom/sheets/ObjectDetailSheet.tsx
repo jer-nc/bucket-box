@@ -70,11 +70,7 @@ const ObjectDetailSheet = ({ file, bucketName, folderPath }: ObjectDetail) => {
         <>
             <Sheet defaultOpen={false}>
                 <SheetTrigger className="flex items-center w-full cursor-default">
-                    <div className="flex items-center w-full" onClick={
-                        () => {
-                            setIsClicked(!isClicked)
-                        }
-                    }>
+                    <div className="flex items-center w-full" onClick={() => {setIsClicked(!isClicked)}}>
                         <Eye size={16} className="mr-2" />
                         Details
                     </div>

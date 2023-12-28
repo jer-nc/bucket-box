@@ -136,7 +136,7 @@ const UploadFilesDialog = ({ bucketName, folderPath }: UploadFilesDialogProps) =
               Choose Folder
             </Button>
             <Button variant='outline' onClick={() => openDialog('file')}>
-              Choose File(s)
+              Choose File
             </Button>
           </div>
           {
