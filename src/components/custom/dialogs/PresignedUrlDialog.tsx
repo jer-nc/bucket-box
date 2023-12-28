@@ -8,6 +8,7 @@ import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { generatePresignedUrl } from "@/cli-functions/generatePresignedUrl";
 import CodeBlock from "../codeblock/CodeBlock";
+
 interface PresignedUrlDialogProps {
     file: CardDropdownProps['file'];
     bucketName: string;
@@ -18,10 +19,11 @@ interface PresignedUrlDialogProps {
 const PresignedUrlDialog = ({ file, bucketName, folderPath, currentProfile }: PresignedUrlDialogProps) => {
     const [expirationTime, setExpirationTime] = useState('')
     const [url, setUrl] = useState('')
+    
     const generateUrlMutation = useMutation({
         mutationFn: async () => {
             const awsResponse = await generatePresignedUrl({ bucketName, folderPath, fileName: file.name, currentProfile, expiration: expirationTime });
-            console.log('awsResponse', awsResponse)
+            // console.log('awsResponse', awsResponse)
             const res = { res: awsResponse };
             return res;
         },
@@ -46,8 +48,6 @@ const PresignedUrlDialog = ({ file, bucketName, folderPath, currentProfile }: Pr
 
 
     const handleSubmit = () => {
-        console.log('handle submit')
-        console.log('expirationTime', expirationTime)
         generateUrlMutation.mutate();
     }
 

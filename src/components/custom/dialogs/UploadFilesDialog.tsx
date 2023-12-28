@@ -42,7 +42,7 @@ const UploadFilesDialog = ({ bucketName, folderPath }: UploadFilesDialogProps) =
         setSelectedPath(null);
         setResponseLog("");
       } else {
-        console.log(selected);
+        // console.log(selected);
         setSelectedPath(selected as string);
       }
     } else {

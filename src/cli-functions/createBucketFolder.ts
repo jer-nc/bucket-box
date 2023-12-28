@@ -14,8 +14,8 @@ type FolderResponse = {
 }
 
 export async function createBucketFolder({ bucketName, folderPath, folderName, profile }: CreateBucketFolderParams): Promise<FolderResponse> {
-   let regionFn = ''
-   
+    let regionFn = ''
+
     const region = await getBucketRegion(bucketName, profile);
 
     if (region !== null) {
@@ -33,19 +33,18 @@ export async function createBucketFolder({ bucketName, folderPath, folderName, p
     }
 
     const command = new Command('aws-cli', commandArgs);
-    
+
     let errorOutput = '';
-    console.log('command', command);
+    
     command.stderr.on('data', data => {
         errorOutput += data.toString();
     });
 
     try {
-        const child = await command.execute();
-        const str = child.stdout.toString();
-        console.log('str', str);
-        const strParse = JSON.parse(str);
-        return strParse;
+        const childProcess = await command.execute();
+        const stdoutString = childProcess.stdout.toString();
+        const parsedStdout = JSON.parse(stdoutString);
+        return parsedStdout;
     } catch (error) {
         throw new Error(`Command failed with error: ${errorOutput}`);
     }

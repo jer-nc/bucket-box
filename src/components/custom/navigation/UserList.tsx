@@ -9,7 +9,7 @@ const UserListSelect = () => {
     // console.log('profiles', profiles);
 
     const handleProfileChange = (value: string) => {
-       console.log('value', value)
+       // console.log('value', value)
         const selectedProfile = value;
         changeProfile(selectedProfile);
     };

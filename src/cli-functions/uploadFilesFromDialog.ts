@@ -20,7 +20,6 @@ export async function uploadFilesFromDialog(localPath: string, bucketName: strin
 
         const command = new Command('aws-cli', ["s3", syncCommand, localPath, s3Path, "--region", region, "--profile", profile]);
 
-        console.log('command', command);
         let errorOutput = '';
 
         command.stderr.on('data', data => {
@@ -29,7 +28,7 @@ export async function uploadFilesFromDialog(localPath: string, bucketName: strin
 
         command.stdout.on('data', data => {
             const message = data.toString();
-            console.log('Files Downloaded:', message);
+            // console.log('Files Downloaded:', message);
             updateLogCallback(message);
         });
 
@@ -38,7 +37,6 @@ export async function uploadFilesFromDialog(localPath: string, bucketName: strin
         if (child.code !== 0) {
             throw new Error(`Command failed with code ${child.code}. Error: ${errorOutput}`);
         }
-        console.log('child', child);
 
         const str = child.stdout.toString();
 

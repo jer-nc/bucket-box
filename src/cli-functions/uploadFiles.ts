@@ -14,7 +14,7 @@ export async function uploadFiles({ bucketName, folderPath, profile, files }: { 
         }
         let errorOutput = '';
 
-        console.log(command)
+        // console.log(command)
 
         command.stderr.on('data', data => {
             errorOutput += data.toString();
@@ -22,7 +22,7 @@ export async function uploadFiles({ bucketName, folderPath, profile, files }: { 
         try {
             const child = await command.execute();
             const str = child.stdout.toString();
-            console.log(str);
+            // console.log(str);
             // const strParse = JSON.parse(str);
             results.push(child);
         } catch (error) {

@@ -43,7 +43,7 @@ const Sidebar = () => {
   ]
 
   const handleNavigation = (path: string) => {
-    console.log(path)
+    // console.log(path)
     navigate(path)
   }
 

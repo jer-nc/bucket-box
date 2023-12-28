@@ -10,7 +10,7 @@ function useUserSession() {
     async function getCurrentProfile() {
         try {
             const fetchedProfiles = await getAllProfiles();
-            console.log('Fetched Profiles', fetchedProfiles);
+            // console.log('Fetched Profiles', fetchedProfiles);
             setProfiles(fetchedProfiles);
             return fetchedProfiles;
         } catch (error) {

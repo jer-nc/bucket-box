@@ -15,10 +15,10 @@ export async function getFileContent({ bucketName, folderPath, fileName, current
         command = new Command('aws-cli', ['s3', 'presign', `s3://${bucketName}/${folderPath}/${fileName}`, '--region', region]);
     }
 
-    console.log(command)
+    // console.log(command)
     try {
         const result = await command.execute();
-        console.log(result);
+        // console.log(result);
         const resultString = result.stdout.toString();
         return resultString
     } catch (error) {

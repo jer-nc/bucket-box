@@ -25,7 +25,6 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                         variant='ghost'
                         onClick={(e) => {
                             e.stopPropagation();
-                            console.log('click')
                         }}
                     >
                         <MoreVertical size={16} />
@@ -64,7 +63,7 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                         onClick={async (e) => {
                             e.stopPropagation();
                             let bucketRegion = await getBucketRegion(bucket.Name, currentProfile);
-                            console.log('bucketRegion', bucketRegion)
+                            // console.log('bucketRegion', bucketRegion)
                             if (bucketRegion === null) {
                                 bucketRegion = 'us-east-1';
                             }
@@ -79,7 +78,6 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                         onClick={async (e) => {
                             e.stopPropagation();
                             let bucketRegion = await getBucketRegion(bucket.Name, currentProfile);
-                            console.log('bucketRegion', bucketRegion)
                             if (bucketRegion === null) {
                                 bucketRegion = 'us-east-1';
                             }

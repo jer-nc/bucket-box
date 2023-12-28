@@ -25,18 +25,13 @@ export async function generatePresignedUrl({ bucketName, folderPath, fileName, c
             command = new Command('aws-cli', ['s3', 'presign', `s3://${bucketName}/${folderPath}/${fileName}`, '--expires-in', expiration, '--region', region]);
         }
 
-        console.log('Comando: ' + command)
-
         const result = await command.execute();
-        console.log(result);
         const resultString = result.stdout.toString();
 
         return resultString;
 
     } catch (error) {
-        console.error(error);
         if (error instanceof Error) {
-            console.error(error.message);
             return error.message;
         }
     }

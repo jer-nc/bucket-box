@@ -17,10 +17,10 @@ export async function createBucket({ bucketName, region, profile }: CreateBucket
     });
 
     try {
-        const child = await command.execute();
-        const str = child.stdout.toString();
-        const strParse = JSON.parse(str);
-        return strParse;
+        const childProcess = await command.execute();
+        const stdoutString = childProcess.stdout.toString();
+        const parsedStdout = JSON.parse(stdoutString);
+        return parsedStdout;
     } catch (error) {
         throw new Error(`Command failed with error: ${errorOutput}`);
     }

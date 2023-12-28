@@ -22,7 +22,7 @@ const UploadFiles = ({ bucketName, folderPath, profile, currentPathname }: Uploa
         setFiles(fileObjects as FileOrDirectory[])
     })
 
-    console.log('files', files)
+    // console.log('files', files)
 
     useEffect(() => {
         if (files.length > 0) {
@@ -36,7 +36,7 @@ const UploadFiles = ({ bucketName, folderPath, profile, currentPathname }: Uploa
     }
 
     const handleSubmit = async () => {
-        console.log('submit')
+        // console.log('submit')
         uploadFilesMutation.mutate({ bucketName, folderPath, files, profile });
     }
 

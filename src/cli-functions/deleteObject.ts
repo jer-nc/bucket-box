@@ -24,25 +24,19 @@ export async function deleteObject({ bucketName, folderPath, fileName, currentPr
             command = new Command('aws-cli', ['s3', 'rm', `s3://${bucketName}/${folderPath}/${fileName}/`, '--recursive', '--region', region]);
         }
     } else {
-        console.error("Tipo no válido. Debe ser 'file' o 'folder'.");
+        console.error("Invalid type. Must be 'file' or 'folder'");
         return null;
     }
 
-    console.log('Comando: ' + command)
 
     if (command) {
-        console.log(command);
         try {
             const result = await command.execute();
-            console.log(result);
             const resultString = result.stdout.toString();
             return resultString;
         } catch (error) {
             console.error(error);
-            if (error instanceof Error) {
-                console.error(error.message);
-            }
-            return null;
+            throw new Error(`Command failed with error: ${error}`);
         }
     } else {
         console.error("No se pudo crear el comando.");

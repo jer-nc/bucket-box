@@ -18,7 +18,7 @@ export async function syncBucketContents(localPath: string, bucketName: string, 
 
         const command = new Command('aws-cli', ["s3", syncCommand, `s3://${bucketName}`, localPath, "--region", region, "--profile", profile]);
 
-        console.log('command', command);
+        // console.log('command', command);
         let errorOutput = '';
 
         command.stderr.on('data', data => {
@@ -27,7 +27,7 @@ export async function syncBucketContents(localPath: string, bucketName: string, 
 
         command.stdout.on('data', data => {
             const message = data.toString();
-            console.log('Files Downloaded:', message);
+            // console.log('Files Downloaded:', message);
             updateLogCallback(message);
         });
 
@@ -36,7 +36,7 @@ export async function syncBucketContents(localPath: string, bucketName: string, 
         if (child.code !== 0) {
             throw new Error(`Command failed with code ${child.code}. Error: ${errorOutput}`);
         }
-        console.log('child', child);
+        // console.log('child', child);
 
         const str = child.stdout.toString();
 
