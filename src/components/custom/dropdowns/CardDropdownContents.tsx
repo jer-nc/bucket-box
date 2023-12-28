@@ -10,6 +10,7 @@ import { File } from "@/lib/app";
 import { extractBucketAndFolder } from "@/lib/utils";
 import { useLocation } from "react-router-dom";
 import DeleteObjectsDialog from "../dialogs/DeleteObjectsDialog";
+import PresignedUrlDialog from "../dialogs/PresignedUrlDialog";
 
 export interface CardDropdownProps {
     file: File;
@@ -64,6 +65,19 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
                             </DropdownMenuItem>
                         )
                     }
+                    {
+                        file.type === 'file' && (
+                            <DropdownMenuItem
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    console.log('click')
+                                }}
+                            >
+                                <PresignedUrlDialog bucketName={bucketName} folderPath={folderPath} currentProfile={currentProfile} file={file} />
+                            </DropdownMenuItem>
+                        )
+                    }
                     <DropdownMenuItem
                         onClick={(e) => {
                             e.stopPropagation();
@@ -74,7 +88,7 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
                     </DropdownMenuItem>
                     <DropdownMenuItem
 
-                        className="bg-destructive/40 hover:bg-destructive focus:bg-destructive text-white"
+                        className="bg-destructive/80 hover:bg-destructive focus:bg-destructive text-primary"
                         onClick={(e) => {
                             e.stopPropagation();
                             e.preventDefault();

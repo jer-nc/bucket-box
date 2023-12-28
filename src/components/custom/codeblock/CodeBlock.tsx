@@ -35,10 +35,10 @@ const CodeBlock = ({ data, language }: Props) => {
 
     return (
         <div className='relative'>
-            <Button onClick={copyToClipboard} size='iconSm' variant='ghost' className='absolute top-2 right-2'>
-                {isCopied ? <ClipboardCheck fill='white' size={16} /> : <Clipboard fill='white' size={16} />}
+            <Button onClick={copyToClipboard} size='iconSm' variant='outline' className='absolute top-2 right-2'>
+                {isCopied ? <ClipboardCheck  size={16} /> : <Clipboard  size={16} />}
             </Button>
-            <SyntaxHighlighter wrapLines={true} wrapLongLines className="rounded-md min-h-[3rem]" language={language} style={vs2015}>
+            <SyntaxHighlighter wrapLines={true} wrapLongLines={true} className="rounded-md min-h-[3rem] max-w-[39rem]" language={language} style={vs2015}>
                 {data}
             </SyntaxHighlighter>
         </div>

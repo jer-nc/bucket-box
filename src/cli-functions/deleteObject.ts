@@ -4,12 +4,6 @@ import { getBucketRegion } from ".";
 export async function deleteObject({ bucketName, folderPath, fileName, currentProfile, type }:
     { bucketName: string, folderPath: string, fileName: string, currentProfile: string, type: string }
 ) {
-
-    console.log('bucketName: ' + bucketName)
-    console.log('folderPath: ' + folderPath)
-    console.log('fileName: ' + fileName)
-    console.log('currentProfile: ' + currentProfile)
-    console.log('type: ' + type)
     let region = await getBucketRegion(bucketName, currentProfile);
     if (region === null) {
         region = 'us-east-1';
