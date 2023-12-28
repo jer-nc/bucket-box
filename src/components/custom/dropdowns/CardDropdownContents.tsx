@@ -74,7 +74,7 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
                     </DropdownMenuItem>
                     <DropdownMenuItem
 
-                        className=" bg-destructive/40 hover:bg-destructive focus:bg-destructive text-white"
+                        className="bg-destructive/40 hover:bg-destructive focus:bg-destructive text-white"
                         onClick={(e) => {
                             e.stopPropagation();
                             e.preventDefault();

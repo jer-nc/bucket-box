@@ -75,7 +75,7 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                         Open in AWS Console
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                        className="text-destructive"
+                        className="bg-destructive/40 hover:bg-destructive focus:bg-destructive text-white"
                         onClick={async (e) => {
                             e.stopPropagation();
                             let bucketRegion = await getBucketRegion(bucket.Name, currentProfile);

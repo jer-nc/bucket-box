@@ -28,7 +28,7 @@ const ListBucketContents = ({ bucketName, profile }: ListBucketContentsProps) =>
   const { data, isLoading, isError, error, isSuccess } = useQuery({
     queryKey: ['bucketData', profile, bucketName],
     queryFn: () => getBucketContents(bucketName, profile),
-    retry: 3,
+    retry: 1,
   });
 
   if (isError) {
