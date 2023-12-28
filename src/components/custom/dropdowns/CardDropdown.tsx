@@ -63,7 +63,7 @@ const CardDropdown = ({ bucket }: CardDropdownProps) => {
                         onClick={async (e) => {
                             e.stopPropagation();
                             let bucketRegion = await getBucketRegion(bucket.Name, currentProfile);
-                            // console.log('bucketRegion', bucketRegion)
+                          // console.log('bucketRegion', bucketRegion)
                             if (bucketRegion === null) {
                                 bucketRegion = 'us-east-1';
                             }

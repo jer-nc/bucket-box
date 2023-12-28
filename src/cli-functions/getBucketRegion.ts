@@ -4,7 +4,7 @@ export async function getBucketRegion(bucket: string, profile: string) {
     try {
         const command = new Command('aws-cli', ["s3api", "get-bucket-location", '--bucket', bucket, "--output", "json", "--profile", profile]);
 
-        // console.log('command', command);
+      // console.log('command', command);
         let errorOutput = '';
 
         command.stderr.on('data', data => {
@@ -16,13 +16,13 @@ export async function getBucketRegion(bucket: string, profile: string) {
         if (child.code !== 0) {
             throw new Error(`Command failed with code ${child.code}. Error: ${errorOutput}`);
         }
-        // console.log('child', child);
+      // console.log('child', child);
 
         const str = child.stdout.toString();
-        // console.log('str', str);
+      // console.log('str', str);
         const strParse = JSON.parse(str);
 
-        // console.log('strParse', strParse);
+      // console.log('strParse', strParse);
         if (!str.length) {
             throw new Error('No buckets found');
         }

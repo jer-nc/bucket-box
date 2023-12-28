@@ -28,7 +28,7 @@ export async function uploadFilesFromDialog(localPath: string, bucketName: strin
 
         command.stdout.on('data', data => {
             const message = data.toString();
-            // console.log('Files Downloaded:', message);
+          // console.log('Files Downloaded:', message);
             updateLogCallback(message);
         });
 

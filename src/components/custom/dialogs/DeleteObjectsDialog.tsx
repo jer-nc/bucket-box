@@ -23,7 +23,7 @@ const DeleteObjectsDialog = ({ file, bucketName, folderPath, currentProfile }: D
     const deleteObjectMutation = useMutation({
         mutationFn: async () => {
             const awsResponse = await deleteObject({ bucketName, folderPath, fileName: file.name, currentProfile, type: file.type });
-            // console.log('awsResponse', awsResponse)
+          // console.log('awsResponse', awsResponse)
             const res = { res: awsResponse };
             return res;
         },
@@ -58,7 +58,7 @@ const DeleteObjectsDialog = ({ file, bucketName, folderPath, currentProfile }: D
 
 
     const handleSubmit = () => {
-        // console.log('delete')
+      // console.log('delete')
         deleteObjectMutation.mutate();
     }
 

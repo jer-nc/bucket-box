@@ -23,7 +23,7 @@ const PresignedUrlDialog = ({ file, bucketName, folderPath, currentProfile }: Pr
     const generateUrlMutation = useMutation({
         mutationFn: async () => {
             const awsResponse = await generatePresignedUrl({ bucketName, folderPath, fileName: file.name, currentProfile, expiration: expirationTime });
-            // console.log('awsResponse', awsResponse)
+          // console.log('awsResponse', awsResponse)
             const res = { res: awsResponse };
             return res;
         },

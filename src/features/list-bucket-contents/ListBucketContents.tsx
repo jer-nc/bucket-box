@@ -23,7 +23,7 @@ const ListBucketContents = ({ bucketName, profile }: ListBucketContentsProps) =>
   const navigate = useNavigate();
   const { setCurrentBucketRegion, isRefetching } = useBucketStore();
 
-  // console.log('isRefetching', isRefetching)
+// console.log('isRefetching', isRefetching)
 
   const { data, isLoading, isError, error, isSuccess } = useQuery({
     queryKey: ['bucketData', profile, bucketName],
@@ -45,21 +45,20 @@ const ListBucketContents = ({ bucketName, profile }: ListBucketContentsProps) =>
       try {
         const currentRegion = await getBucketRegion(bucketName, profile);
         setCurrentBucketRegion(currentRegion);
-        // console.log('currentRegion', currentRegion);
+      // console.log('currentRegion', currentRegion);
       } catch (err) {
-        // Handle error if needed
         console.error('Error fetching region:', err);
       }
     };
     getCurrentRegion();
   }, [bucketName, profile, isSuccess, setCurrentBucketRegion]);
-  // console.log('data', data)
+// console.log('data', data)
 
   const handleNavigate = (prefix: string) => {
-    // console.log('prefix', prefix)
+  // console.log('prefix', prefix)
     const bucketName = currentPathname.replace('/buckets/', '');
     const newPathname = `/buckets/${bucketName}/${prefix}`
-    // console.log('newPathname', newPathname)
+  // console.log('newPathname', newPathname)
     navigate(newPathname);
   };
 

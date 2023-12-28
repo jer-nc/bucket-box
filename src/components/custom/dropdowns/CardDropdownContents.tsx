@@ -36,7 +36,7 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
                         onClick={(e) => {
                             e.stopPropagation();
                             e.preventDefault();
-                            // console.log('click')
+                          // console.log('click')
                         }}
                     >
                         <MoreVertical size={16} />
@@ -58,7 +58,7 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     e.preventDefault();
-                                    // console.log('click')
+                                  // console.log('click')
                                 }}
                             >
                                 <ObjectDetailSheet bucketName={bucketName} folderPath={folderPath} file={file} />
@@ -71,7 +71,7 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     e.preventDefault();
-                                    // console.log('click')
+                                  // console.log('click')
                                 }}
                             >
                                 <PresignedUrlDialog bucketName={bucketName} folderPath={folderPath} currentProfile={currentProfile} file={file} />
@@ -102,7 +102,7 @@ const CardDropdownContents = ({ file }: CardDropdownProps) => {
                         onClick={async (e) => {
                             e.stopPropagation();
                             let bucketRegion = await getBucketRegion(bucketName, currentProfile);
-                            // console.log('bucketRegion', bucketRegion)
+                          // console.log('bucketRegion', bucketRegion)
                             if (bucketRegion === null) {
                                 bucketRegion = 'us-east-1';
                             }
