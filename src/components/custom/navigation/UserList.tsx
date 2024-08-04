@@ -9,14 +9,18 @@ const UserListSelect = () => {
     // console.log('profiles', profiles);
 
     const handleProfileChange = (value: string) => {
-     // console.log('value', value)
+        // console.log('value', value)
         const selectedProfile = value;
         changeProfile(selectedProfile);
     };
 
 
     return (
-        <Select onValueChange={handleProfileChange}>
+        <Select
+            onValueChange={handleProfileChange}
+            value={currentProfile ? currentProfile.toLowerCase() : 'no-profile'}
+            defaultValue={currentProfile ? currentProfile.toLowerCase() : 'no-profile'}
+        >
             <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder={currentProfile} defaultValue={currentProfile} />
             </SelectTrigger>
